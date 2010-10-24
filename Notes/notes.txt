@@ -1,0 +1,38 @@
+URLs
+====
+/gradebook/
+
+/assignments/
+/assignments/create/
+/assignments/update/{pk}/
+/assignments/delete/{pk}/
+
+/students/
+/students/create/
+/students/update/{pk}/
+/students/delete/{pk}/
+
+
+Features
+========
+
+Must Have
+---------
+Student, assignment, grade creation.
+Public grades page.
+
+Nice Features
+-------------
+Multiple classes
+Grade percent calculations
+Assignment categories (exam, quiz, homework, etc. to allow weighting/extra credit)
+Private grades page.
+Sortable tables
+
+
+Unecessary
+----------
+Custom sortable tables
+Ajax spreadsheet
+Letter grades
+Jumpstarting a class with students by parsing text area input

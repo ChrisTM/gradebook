@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<table border="1">
+	<thead>
+		<tr>
+			<th>Student</th>
+			{% for assignment in assignments %}
+			<th>{{ assignment.name }}</th>
+			{% endfor %}
+			<th>{{ assignment.name }}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Student 1</td>
+			<td>Grade 1</td>
+			<td>Grade 2</td>
+		</tr>
+	</tbody>
+</table>
+{% endblock %}
