@@ -1,27 +1,24 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8">
-		<title>{% block title %}{% endblock%} ― SimpleGradebook</title>
-	</head>
-	<body>
-		<div id="nav">
-			{% block nav %}
-			<ul>
-				{# TODO: Change urls to use url_for #}
-				<li><a href="/gradebook/">Gradebook</a></li>
-				<li><a href="/assignments/">Assignments</a></li>
-				<li><a href="/students/">Students</a></li>
-			</ul>
-			{% endblock %}
-		</div>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>{% block title %}{% endblock%} ― SimpleGradebook</title>
+</head>
+<body>
+	<div id="nav">
+		<ul>
+			<li><a href="{{ url_for('gradebook') }}">Gradebook</a></li>
+			<li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+			<li><a href="{{ url_for('students') }}">Students</a></li>
+		</ul>
+	</div>
 
-		<div id="content">
-		{% block content %}{% endblock %}
-		</div>
+	<div id="content">
+	{% block content %}{% endblock %}
+	</div>
 
-		<div id="footer">
-		{% block footer %}{% endblock %}	
-		</div>
-	</body>
+	<div id="footer">
+	{% block footer %}{% endblock %}	
+	</div>
+</body>
 </html>

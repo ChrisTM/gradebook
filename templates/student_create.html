@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Student List{% endblock %}
+{% block content %}
+<h1>Create a Student</h1>
+<form action="{{ url_for('student_create') }}" method="post" accept-charset="utf-8">
+	<p>First name: <input type="text" name="first_name" value="" required></p>
+	<p>Last name: <input type="text" name="last_name" value="" required></p>
+	<p>Alias: <input type="text" name="alias" value=""></p>
+	<p>Graduation Year: <input type="text" name="grad_year" value=""></p>
+	<p>Email Address: <input type="text" name="email" value=""></p>
+	<p><input type="submit" name="create" value="Create student">
+	<input type="submit" name="create_and_add" value="Create student and add another…"></p>
+</form>
+{% endblock %}

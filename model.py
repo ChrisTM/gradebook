@@ -41,6 +41,7 @@ class Model(object):
         pass
 
     def delete(self, pk=None):
+        pass
 
     def save(self):
         """INSERT or UPDATE the object into the db as necessary."""
@@ -58,7 +59,7 @@ class Person(Model):
         self._in_db = in_db
 
     def save(self):
-        Model._query_db(
+        pass
 
     def __str__(self):
         if self.first_name and self.last_name:

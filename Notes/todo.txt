@@ -1,0 +1,3 @@
+  * Form validation on student creation
+  * Form pre-filling on fail of student creation
+  * Message flashing for things like user creation. (Message code in base.html, probably)

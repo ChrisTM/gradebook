@@ -1,4 +1,4 @@
-CREATE TABLE person (
+CREATE TABLE student (
 	pk integer primary key,
 	first_name text, 
 	last_name text, 
@@ -19,8 +19,9 @@ CREATE TABLE grade (
 	pk integer primary key,
 	points integer,
 	comment text,
-	person_pk integer,
+	student_pk integer,
 	assignment_pk integer,
-	FOREIGN KEY(person_pk) REFERENCES person(pk),
+	FOREIGN KEY(student_pk) REFERENCES student(pk),
 	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk)
+	-- Should write a unique constraint on (person_pk, assignment_pk)
 );
