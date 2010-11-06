@@ -10,11 +10,11 @@ insert into student values (
 
 
 insert into assignment (name, description, due_date, points) values (
-	"HW 1", "Do this", 2010-09-13, 10);
+	"HW 1", "Do this", date('2010-09-13'), 10);
 insert into assignment (name, description, due_date, points) values (
-	"HW 2", "Do that", 2010-10-15, 10);
+	"HW 2", "Do that", date('2010-10-15'), 10);
 insert into assignment (name, description, due_date, points) values (
-	"HW 3", "Do something else", 2010-10-25, 20);
+	"HW 3", "Do something else", date('2010-10-25'), 20);
 
 -- Chris has grades 8, 9, 20. Devin is doing well with nearly full marks. Jamie is in the middle of the class.
 insert into grade (points, student_pk, assignment_pk) values (8, 1, 1);

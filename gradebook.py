@@ -41,7 +41,6 @@ def after_request(response):
     return response
 
 
-
 @app.route('/')
 def index():
     return redirect(url_for("gradebook"), code=302)
@@ -49,7 +48,6 @@ def index():
 @app.route('/gradebook/')
 def gradebook():
     return render_template("gradebook.html")
-
 
 
 @app.route('/students/')
@@ -94,6 +92,23 @@ def student_delete(student_id):
 		g.db.commit()
 		return redirect(url_for('students'))
 
+
+@app.route('/assignments/')
+def assignments():
+    assignments = query_db('SELECT * FROM assignment')
+    return render_template('assignments.html', assignments=assignments)
+
+@app.route('/assignments/create/', methods=['GET', 'POST'])
+def assignment_create():
+	return "Create an assignment"
+
+@app.route('/assignments/update/<int:assignment_id>/', methods=['GET', 'POST'])
+def assignment_update(assignment_id):
+	return "Update assignment #{0}".format(assignment_id)
+
+@app.route('/assignments/delete/<int:assignment_id>/', methods=['GET', 'POST'])
+def assignment_delete(assignment_id):
+	return "Delete assignment #{0}".format(assignment_id)
 
 
 if __name__ == '__main__':
