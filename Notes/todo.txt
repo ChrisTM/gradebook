@@ -1,3 +1,9 @@
-  * Form validation on student creation
-  * Form pre-filling on fail of student creation
-  * Message flashing for things like user creation. (Message code in base.html, probably)
+  - Message flashing for things like user creation. (Message in base.html, probably)
+  - DRY up the forms.
+  - Encapsulate the SQL into a active-record-like thing.
+  - DRY up the CRUD
+  - Form pre-filling on fail of creation
+  - Form validation on creation
+  - Proper labels on forms
+  - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
+  - Investigate SQL cascades for when deleting assignments (grades get deleted) or students (grades get deleted).

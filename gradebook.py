@@ -60,7 +60,6 @@ def student_create():
 	if request.method == "GET":
 		return render_template('student_create.html')
 	elif request.method == "POST":
-		print request.form
 		g.db.execute('INSERT INTO student (first_name, last_name, alias, grad_year, email) values (:first_name, :last_name, :alias, :grad_year, :email)', request.form)
 		g.db.commit()
 		if "create_and_add" in request.form:
@@ -85,7 +84,6 @@ def student_update(student_id):
 def student_delete(student_id):
 	if request.method == 'GET':
 		student = query_db('SELECT * FROM student WHERE pk=?', [student_id])[0]
-		print student
 		return render_template('student_delete.html', student=student)
 	if request.method == 'POST':
 		g.db.execute('DELETE FROM student WHERE pk=?', [student_id])
@@ -100,15 +98,38 @@ def assignments():
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
-	return "Create an assignment"
+	if request.method == 'GET':
+		return render_template('assignment_create.html')
+	elif request.method == 'POST':
+		g.db.execute('INSERT INTO assignment (name, description, due_date, points) values (:name, :description, :due_date, :points)', request.form)
+		g.db.commit()
+		if "create_and_add" in request.form:
+			return render_template('assignment_create.html')
+		elif "create" in request.form:
+			return redirect(url_for('assignments'))
 
 @app.route('/assignments/update/<int:assignment_id>/', methods=['GET', 'POST'])
 def assignment_update(assignment_id):
-	return "Update assignment #{0}".format(assignment_id)
+	if request.method == 'GET':
+		query = 'SELECT * FROM assignment WHERE pk=?'
+		assignment = query_db(query, [assignment_id])[0]
+		return render_template('assignment_update.html', assignment=assignment)
+	elif request.method == 'POST':
+		query = 'UPDATE assignment SET name=:name, description=:description, due_date=date(:due_date), points=:points WHERE pk=:pk'
+		args = dict(request.form.to_dict(flat=True), pk=assignment_id)
+		g.db.execute(query, args)
+		g.db.commit()
+		return redirect(url_for('assignments'))
 
 @app.route('/assignments/delete/<int:assignment_id>/', methods=['GET', 'POST'])
 def assignment_delete(assignment_id):
-	return "Delete assignment #{0}".format(assignment_id)
+	if request.method == 'GET':
+		assignment = query_db('SELECT * FROM assignment WHERE pk=?', [assignment_id])[0]
+		return render_template('assignment_delete.html', assignment=assignment)
+	if request.method == 'POST':
+		g.db.execute('DELETE FROM assignment WHERE pk=?', [assignment_id])
+		g.db.commit()
+		return redirect(url_for('assignments'))
 
 
 if __name__ == '__main__':

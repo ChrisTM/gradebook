@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Assignment Create{% endblock %}
+{% block content %}
+<h1>Create an Assignment</h1>
+<form action="{{ url_for('assignment_create') }}" method="post" accept-charset="utf-8">
+	<p>Name: <input type="text" name="name" value="" required autofocus></p>
+	<p>Description: <input type="text" name="description" value=""></p>
+	<p>Due date: <input type="date" name="due_date" value=""></p>
+	<p>Points <input type="number" min="0" name="points" value=""></p>
+	<p><input type="submit" name="create" value="Create assignment">
+	<input type="submit" name="create_and_add" value="Create assignment and add another…"></p>
+</form>
+{% endblock %}
