@@ -71,7 +71,7 @@ def gradebook():
 @app.route('/students/')
 def students():
     students = query_db('SELECT * FROM student ORDER BY first_name')
-    return render_template('students.html', students=students)
+    return render_template('student_list.html', students=students)
 
 @app.route('/students/create/', methods=['GET', 'POST'])
 def student_create():
@@ -112,7 +112,7 @@ def student_delete(student_id):
 @app.route('/assignments/')
 def assignments():
     assignments = query_db('SELECT * FROM assignment')
-    return render_template('assignments.html', assignments=assignments)
+    return render_template('assignment_list.html', assignments=assignments)
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
