@@ -6,17 +6,19 @@
 		<tr>
 			<th>Student</th>
 			{% for assignment in assignments %}
-			<th>{{ assignment.name }}</th>
+			<th><a href="{{ url_for('assignment_update', assignment_id=assignment.pk) }}">{{ assignment.name }}</a></th>
 			{% endfor %}
-			<th>{{ assignment.name }}</th>
 		</tr>
 	</thead>
 	<tbody>
+		{% for student in students %}
 		<tr>
-			<td>Student 1</td>
-			<td>Grade 1</td>
-			<td>Grade 2</td>
+			<td><a href="{{ url_for('student_update', student_id=student.pk) }}">{{ student.first_name }} {{ student.last_name }}</a></td>
+			{% for grade in student.grades %}
+			<td>{{ grade }}</td>
+			{% endfor %}
 		</tr>
+		{% endfor %}
 	</tbody>
 </table>
 {% endblock %}

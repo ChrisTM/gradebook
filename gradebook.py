@@ -47,12 +47,30 @@ def index():
 
 @app.route('/gradebook/')
 def gradebook():
-    return render_template("gradebook.html")
+	#TODO: This method scares me. Seek help. Improve this.
+	assignments = query_db("SELECT pk, name \
+			FROM assignment \
+			ORDER BY assignment.pk, assignment.due_date")
+	students = query_db("SELECT pk, first_name, last_name \
+			FROM student \
+			ORDER BY student.pk, first_name, last_name")
+	grades_query = "SELECT assignment.pk, grade.points \
+			FROM assignment \
+			LEFT JOIN grade ON grade.assignment_pk = assignment.pk \
+				AND grade.student_pk = ? \
+			ORDER BY assignment.pk, assignment.due_date;"
+	for student in students:
+		#TODO: This gets the grades (nulls for ungraded too!)
+		grades = query_db(grades_query, (str(student['pk'])))
+		student['grades'] = [row['points'] for row in grades]
+	print students
+	return render_template("gradebook.html", assignments=assignments,
+			students=students)
 
 
 @app.route('/students/')
 def students():
-    students = query_db('SELECT * FROM student')
+    students = query_db('SELECT * FROM student ORDER BY first_name')
     return render_template('students.html', students=students)
 
 @app.route('/students/create/', methods=['GET', 'POST'])
