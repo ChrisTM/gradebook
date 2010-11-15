@@ -4,6 +4,6 @@
 <h1>Delete Assignment</h1>
 <form action="{{ url_for('assignment_delete', assignment_id=assignment.pk) }}" method="post" accept-charset="utf-8">
 	<p>Do you really want to delete the assighment “{{ assignment.name }}”, and all associated grades?</p>
-	<p><input type="submit" value="Yes, delete it."> <a href="{{ url_for('assignments') }}">No, just take me back to the assignment list.</a></p>
+	<p><input type="submit" value="Yes, delete it."> <a href="{{ url_for('assignment_view', assignment_id=assignment.pk) }}">No, take me back to this assignment’s page.</a></p>
 </form>
 {% endblock %}

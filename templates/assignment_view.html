@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Assignment: {{ assignment.name }}{% endblock %}
+{% block content %}
+<h1>Assignment: {{ assignment.name }}</h1>
+<p><a href="{{ url_for('assignment_delete', assignment_id=assignment.pk) }}">Delete this assignment.</a></p>
+
+<h2>Assignment Info</h2>
+<p><a href="{{ url_for('assignment_update', assignment_id=assignment.pk) }}">Edit this info.</a></p>
+<table>
+	<tr>
+		<th>Name: </th>
+		<td>{{ assignment.name }}</td>
+	</tr>
+	<tr>
+		<th>Description: </th>
+		<td>{{ assignment.description }}</td>
+	</tr>
+	<tr>
+		<th>Due date: </th>
+		<td>{{ assignment.due_date }}</td>
+	</tr>
+	<tr>
+		<th>Points: </th>
+		<td>{{ assignment.points }}</td>
+	</tr>
+</table>
+
+<h2>Grades</h2>
+<p><a href="{{ url_for('assignment_grades_update', assignment_id=assignment.pk) }}">Edit this info.</a></p>
+<table border="1">
+	<thead>
+		<tr>
+			<th>Student</th>
+			<th>Points</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for student in students_grade %}
+		<tr>
+			<td>{{ student.first_name }} {{ student.last_name }}</td>
+			<td>{{ student.points }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

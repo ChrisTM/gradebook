@@ -87,7 +87,9 @@ def student_create():
 
 @app.route('/students/view/<int:student_id>/')
 def student_view(student_id):
-	return "Student view for pk: {0}".format(student_id)
+	student_query = "SELECT * FROM student WHERE pk=?"
+	student = query_db(student_query, [student_id])[0]
+	return render_template("student_view.html", student=student)
 
 @app.route('/students/update/<int:student_id>/', methods=['GET', 'POST'])
 def student_update(student_id):
