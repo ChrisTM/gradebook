@@ -2,7 +2,6 @@
 {% block title %}Update an Assignment{% endblock %}
 {% block content %}
 <h1>Update an Assignments’s Info</h1>
-<p>Here you can update the information for this assignment. Or you can go <a href="{{ url_for('assignment_delete', assignment_id=assignment.pk) }}">delete it</a> instead.</p>
 <form action="{{ url_for('assignment_update', assignment_id=assignment.pk) }}" method="post" accept-charset="utf-8">
 	<p>Name: <input type="text" name="name" value="{{ assignment.name }}" required autofocus></p>
 	<p>Description: <input type="text" name="description" value="{{ assignment.description }}"></p>

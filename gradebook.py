@@ -85,6 +85,10 @@ def student_create():
 		elif "create" in request.form:
 			return redirect(url_for('students'))
 
+@app.route('/students/view/<int:student_id>/')
+def student_view(student_id):
+	return "Student view for pk: {0}".format(student_id)
+
 @app.route('/students/update/<int:student_id>/', methods=['GET', 'POST'])
 def student_update(student_id):
 	if request.method == 'GET':
@@ -119,12 +123,28 @@ def assignment_create():
 	if request.method == 'GET':
 		return render_template('assignment_create.html')
 	elif request.method == 'POST':
-		g.db.execute('INSERT INTO assignment (name, description, due_date, points) values (:name, :description, :due_date, :points)', request.form)
+		g.db.execute("""
+				INSERT INTO assignment (name, description, due_date, points) 
+				VALUES (:name, :description, :due_date, :points)
+				""", request.form)
 		g.db.commit()
 		if "create_and_add" in request.form:
 			return render_template('assignment_create.html')
 		elif "create" in request.form:
 			return redirect(url_for('assignments'))
+
+@app.route('/assignments/view/<int:assignment_id>/')
+def assignment_view(assignment_id):
+	assignment_query = 'SELECT * FROM assignment WHERE pk=?'
+	assignment = query_db(assignment_query, [assignment_id])[0]
+	students_grade_query = """
+		SELECT student.first_name, student.last_name, grade.points 
+		FROM student LEFT JOIN grade 
+		ON grade.student_pk = student.pk AND grade.assignment_pk=? 
+		ORDER BY student.pk, student.first_name, student.last_name"""
+	students_grade = query_db(students_grade_query, [assignment_id])
+	return render_template('assignment_view.html', assignment=assignment,
+			students_grade=students_grade)
 
 @app.route('/assignments/update/<int:assignment_id>/', methods=['GET', 'POST'])
 def assignment_update(assignment_id):
@@ -138,6 +158,10 @@ def assignment_update(assignment_id):
 		g.db.execute(query, args)
 		g.db.commit()
 		return redirect(url_for('assignments'))
+
+@app.route('/assignment/update_grades/<int:assignment_id>/')
+def assignment_grades_update(assignment_id):
+	return "Assignment grades update for assn: {0}".format(assignment_id)
 
 @app.route('/assignments/delete/<int:assignment_id>/', methods=['GET', 'POST'])
 def assignment_delete(assignment_id):

@@ -1,3 +1,9 @@
+Some SQL
+========
+
+List
+select student.first_name, grade.assignment_pk from (student LEFT OUTER JOIN grade ON grade.student_pk = student.pk) LEFT OUTER JOIN assignment ON grade.assignment_pk = assignment.pk;
+
 URLs
 ====
 /gradebook/
@@ -6,11 +12,13 @@ URLs
 /assignments/create/
 /assignments/update/{pk}/
 /assignments/delete/{pk}/
+/assignments/view/{pk}/
 
 /students/
 /students/create/
 /students/update/{pk}/
 /students/delete/{pk}/
+/students/view/{pk}/
 
 
 Features
