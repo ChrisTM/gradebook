@@ -1,13 +1,13 @@
-  - Write the bits to add grades.
+  - Make the redirects after updates be sensible again.
   - Be consistent with use of pk, id. Choose one and stick to it.
   - Maybe change points -> grade in the grade table. 
-  - Maybe make view separate from update?
   - Message flashing for things like user creation. (Message in base.html, probably)
   - DRY up the forms.
   - Encapsulate the SQL into a active-record-like thing.
   - DRY up the CRUD
   - Form pre-filling on fail of creation
   - Form validation on creation
-  - Proper labels on forms
+  - HTML labels on forms
+  - CSSed forms http://www.cssdrive.com/index.php/examples/exampleitem/tableless_forms/
   - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
   - Investigate SQL cascades for when deleting assignments (grades get deleted) or students (grades get deleted).

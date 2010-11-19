@@ -50,15 +50,15 @@ def gradebook():
 	#TODO: This method scares me. Seek help. Improve this.
 	assignments = query_db("SELECT pk, name \
 			FROM assignment \
-			ORDER BY assignment.pk, assignment.due_date")
+			ORDER BY assignment.due_date, assignment.pk")
 	students = query_db("SELECT pk, first_name, last_name \
 			FROM student \
-			ORDER BY student.pk, first_name, last_name")
+			ORDER BY last_name, student.pk, first_name")
 	grades_query = "SELECT assignment.pk, grade.points \
 			FROM assignment \
 			LEFT JOIN grade ON grade.assignment_pk = assignment.pk \
 				AND grade.student_pk = ? \
-			ORDER BY assignment.pk, assignment.due_date;"
+			ORDER BY assignment.due_date, assignment.pk;"
 	for student in students:
 		#TODO: This gets the grades (nulls for ungraded too!)
 		grades = query_db(grades_query, (str(student['pk'])))
@@ -143,7 +143,7 @@ def assignment_view(assignment_id):
 		SELECT student.first_name, student.last_name, grade.points 
 		FROM student LEFT JOIN grade 
 		ON grade.student_pk = student.pk AND grade.assignment_pk=? 
-		ORDER BY student.pk, student.first_name, student.last_name"""
+		ORDER BY student.first_name, student.last_name, student.pk"""
 	students_grade = query_db(students_grade_query, [assignment_id])
 	return render_template('assignment_view.html', assignment=assignment,
 			students_grade=students_grade)
@@ -161,9 +161,35 @@ def assignment_update(assignment_id):
 		g.db.commit()
 		return redirect(url_for('assignments'))
 
-@app.route('/assignment/update_grades/<int:assignment_id>/')
+@app.route('/assignment/update_grades/<int:assignment_id>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_id):
-	return "Assignment grades update for assn: {0}".format(assignment_id)
+	if request.method == 'GET':
+		assignment_query = 'SELECT * from assignment WHERE pk=?'
+		assignment = query_db(assignment_query, [assignment_id])[0]
+		students_grade_query = """
+			SELECT student.first_name, student.pk, student.last_name,
+				grade.points 
+			FROM student LEFT JOIN grade 
+			ON grade.student_pk = student.pk AND grade.assignment_pk=? 
+			ORDER BY student.first_name, student.last_name, student.pk"""
+		students_grade = query_db(students_grade_query, [assignment_id])
+		return render_template("assignment_grades_update.html",
+				assignment=assignment, students_grade=students_grade)
+	if request.method == 'POST':
+		students_grades = {} # keys are student pks, values are grades
+		for key, value in request.form.iteritems():
+			student_pk = int(key.split("_")[1])
+			if value == "None":
+				continue
+			grade = int(value)
+			g.db.execute("""
+				UPDATE grade
+				SET points=? 
+				WHERE assignment_pk=? AND student_pk=?""",
+				[grade, assignment_id, student_pk])
+		g.db.commit()
+		return redirect(url_for('assignment_view',
+			assignment_id=assignment_id))
 
 @app.route('/assignments/delete/<int:assignment_id>/', methods=['GET', 'POST'])
 def assignment_delete(assignment_id):

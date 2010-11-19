@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Edit grades for {{ assignment.name }}{% endblock %}
+{% block content %}
+<form action="{{ url_for('assignment_grades_update', assignment_id=assignment.pk) }}" method="post" accept-charset="utf-8">
+	<table>
+		{% for student in students_grade %}
+		<tr>
+			<td>{{ student.first_name }} {{ student.last_name }}</td>
+			<td><input type="text" name="student_{{ student.pk }}" value="{{ student.points }}"></td>
+		</tr>
+		{% endfor %}
+	</table>
+	<p><input type="submit" value="Save grades"></p>
+</form>
+{% endblock %}
