@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE student (
 	pk integer primary key,
 	first_name text, 
@@ -25,3 +27,5 @@ CREATE TABLE grade (
 	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk)
 	-- Should write a unique constraint on (person_pk, assignment_pk)
 );
+
+COMMIT;

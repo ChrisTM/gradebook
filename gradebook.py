@@ -78,12 +78,12 @@ def student_create():
 	if request.method == "GET":
 		return render_template('student_create.html')
 	elif request.method == "POST":
-		g.db.execute('INSERT INTO student (first_name, last_name, alias, grad_year, email) values (:first_name, :last_name, :alias, :grad_year, :email)', request.form)
+		cur = g.db.execute('INSERT INTO student (first_name, last_name, alias, grad_year, email) values (:first_name, :last_name, :alias, :grad_year, :email)', request.form)
 		g.db.commit()
 		if "create_and_add" in request.form:
 			return render_template('student_create.html')
 		elif "create" in request.form:
-			return redirect(url_for('students'))
+			return redirect(url_for('student_view', student_id=cur.lastrowid))
 
 @app.route('/students/view/<int:student_id>/')
 def student_view(student_id):
@@ -102,7 +102,7 @@ def student_update(student_id):
 		args = dict(request.form.to_dict(flat=True), pk=student_id)
 		g.db.execute(query, args)
 		g.db.commit()
-		return redirect(url_for('students'))
+		return redirect(url_for('student_view', student_id=student_id))
 
 @app.route('/students/delete/<int:student_id>/', methods=['GET', 'POST'])
 def student_delete(student_id):
@@ -125,7 +125,7 @@ def assignment_create():
 	if request.method == 'GET':
 		return render_template('assignment_create.html')
 	elif request.method == 'POST':
-		g.db.execute("""
+		cur = g.db.execute("""
 				INSERT INTO assignment (name, description, due_date, points) 
 				VALUES (:name, :description, :due_date, :points)
 				""", request.form)
@@ -133,7 +133,7 @@ def assignment_create():
 		if "create_and_add" in request.form:
 			return render_template('assignment_create.html')
 		elif "create" in request.form:
-			return redirect(url_for('assignments'))
+			return redirect(url_for('assignment_view', assignment_id=cur.lastrowid))
 
 @app.route('/assignments/view/<int:assignment_id>/')
 def assignment_view(assignment_id):

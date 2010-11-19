@@ -1,3 +1,5 @@
+BEGIN;
+
 insert into student values (
 	null, "Christopher", "Mitchell", "goose", 2012, "chrism@lclark.edu");
 insert into student values (
@@ -28,3 +30,5 @@ insert into grade (points, student_pk, assignment_pk) values (19, 2, 3);
 insert into grade (points, student_pk, assignment_pk) values (10, 3, 1);
 insert into grade (points, student_pk, assignment_pk) values (19, 3, 3);
 -- Ghostly has no assignments graded. I guess they're invisible to the teacher.
+
+COMMIT;
