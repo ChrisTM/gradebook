@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE student (
 	pk integer primary key,
-	first_name text, 
+	first_name text NOT NULL, 
 	last_name text, 
 	alias text,
 	grad_year integer, 
@@ -11,7 +11,7 @@ CREATE TABLE student (
 
 CREATE TABLE assignment (
 	pk integer primary key,
-	name text,
+	name text NOT NULL,
 	description text,
 	due_date date,
 	points integer
@@ -19,10 +19,10 @@ CREATE TABLE assignment (
 
 CREATE TABLE grade (
 	pk integer primary key,
-	points integer,
+	student_pk integer NOT NULL,
+	assignment_pk integer NOT NULL,
+	points integer NOT NULL,
 	comment text,
-	student_pk integer,
-	assignment_pk integer,
 	FOREIGN KEY(student_pk) REFERENCES student(pk),
 	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk)
 	-- Should write a unique constraint on (person_pk, assignment_pk)

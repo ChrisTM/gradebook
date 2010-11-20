@@ -63,6 +63,7 @@ def gradebook():
 		#TODO: This gets the grades (nulls for ungraded too!)
 		grades = query_db(grades_query, (str(student['pk'])))
 		student['grades'] = [row['points'] for row in grades]
+	print assignments
 	print students
 	return render_template("gradebook.html", assignments=assignments,
 			students=students)
@@ -179,7 +180,7 @@ def assignment_grades_update(assignment_id):
 		students_grades = {} # keys are student pks, values are grades
 		for key, value in request.form.iteritems():
 			student_pk = int(key.split("_")[1])
-			if value == "None":
+			if value == "":
 				continue
 			grade = int(value)
 			g.db.execute("""
