@@ -168,8 +168,8 @@ def assignment_grades_update(assignment_id):
 		assignment_query = 'SELECT * from assignment WHERE pk=?'
 		assignment = query_db(assignment_query, [assignment_id])[0]
 		students_grade_query = """
-			SELECT student.first_name, student.pk, student.last_name,
-				grade.points 
+			SELECT student.first_name, student.last_name, student.pk,
+				grade.points
 			FROM student LEFT JOIN grade 
 			ON grade.student_pk = student.pk AND grade.assignment_pk=? 
 			ORDER BY student.first_name, student.last_name, student.pk"""
@@ -178,16 +178,30 @@ def assignment_grades_update(assignment_id):
 				assignment=assignment, students_grade=students_grade)
 	if request.method == 'POST':
 		students_grades = {} # keys are student pks, values are grades
+		graded_students_query = """
+			SELECT student_pk 
+			FROM grade 
+			WHERE assignment_pk=?"""
+		graded_students = g.db.execute(graded_students_query, [assignment_id])
+		graded_students = graded_students.fetchall()
+		graded_students = [row[0] for row in graded_students]
 		for key, value in request.form.iteritems():
-			student_pk = int(key.split("_")[1])
 			if value == "":
 				continue
-			grade = int(value)
-			g.db.execute("""
-				UPDATE grade
-				SET points=? 
-				WHERE assignment_pk=? AND student_pk=?""",
-				[grade, assignment_id, student_pk])
+			points = int(value)
+			student_pk = int(key[len("student_"):]) #Strips off "student_"
+			if student_pk in graded_students:
+				g.db.execute("""
+					UPDATE grade
+					SET points=? 
+					WHERE student_pk=? AND assignment_pk=?""",
+					[points, student_pk, assignment_id])
+			else: #grade does not already exist, so create it
+				g.db.execute("""
+					INSERT INTO grade
+					(student_pk, assignment_pk, points)
+					VALUES (?, ?, ?)""",
+					[student_pk, assignment_id, points])
 		g.db.commit()
 		return redirect(url_for('assignment_view',
 			assignment_id=assignment_id))
