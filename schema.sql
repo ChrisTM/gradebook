@@ -25,7 +25,7 @@ CREATE TABLE grade (
 	comment text,
 	FOREIGN KEY(student_pk) REFERENCES student(pk),
 	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk)
-	-- Should write a unique constraint on (person_pk, assignment_pk)
+	UNIQUE (student_pk, assignment_pk) --It doesn't make sense to have more than one grade for the same assignment per person.
 );
 
 COMMIT;
