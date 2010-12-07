@@ -15,7 +15,7 @@
 	<tbody>
 		{%- for assignment in assignments %}
 		<tr>
-			<td><a href="{{ url_for('assignment_view', assignment_id=assignment.pk) }}">{{ assignment.name }}</a></td>
+			<td><a href="{{ url_for('assignment_view', assignment_pk=assignment.pk) }}">{{ assignment.name }}</a></td>
 			<td>{{ assignment.points }}</td>
 			<td>{{ assignment.due_date }}</td>
 			<td>{{ assignment.description }}</a></td>

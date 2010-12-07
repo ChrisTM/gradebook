@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Edit grades for {{ assignment.name }}{% endblock %}
 {% block content %}
-<form action="{{ url_for('assignment_grades_update', assignment_id=assignment.pk) }}" method="post" accept-charset="utf-8">
+<form action="{{ url_for('assignment_grades_update', assignment_pk=assignment.pk) }}" method="post" accept-charset="utf-8">
 	<table>
 		{% for student in students_grade %}
 		<tr>

@@ -53,7 +53,7 @@ def gradebook():
 			ORDER BY assignment.due_date, assignment.pk")
 	students = query_db("SELECT pk, first_name, last_name \
 			FROM student \
-			ORDER BY last_name, student.pk, first_name")
+			ORDER BY last_name, first_name, student.pk")
 	grades_query = "SELECT assignment.pk, grade.points \
 			FROM assignment \
 			LEFT JOIN grade ON grade.assignment_pk = assignment.pk \
@@ -84,34 +84,34 @@ def student_create():
 		if "create_and_add" in request.form:
 			return render_template('student_create.html')
 		elif "create" in request.form:
-			return redirect(url_for('student_view', student_id=cur.lastrowid))
+			return redirect(url_for('student_view', student_pk=cur.lastrowid))
 
-@app.route('/students/view/<int:student_id>/')
-def student_view(student_id):
+@app.route('/students/view/<int:student_pk>/')
+def student_view(student_pk):
 	student_query = "SELECT * FROM student WHERE pk=?"
-	student = query_db(student_query, [student_id])[0]
+	student = query_db(student_query, [student_pk])[0]
 	return render_template("student_view.html", student=student)
 
-@app.route('/students/update/<int:student_id>/', methods=['GET', 'POST'])
-def student_update(student_id):
+@app.route('/students/update/<int:student_pk>/', methods=['GET', 'POST'])
+def student_update(student_pk):
 	if request.method == 'GET':
 		query = 'SELECT * FROM student WHERE pk=?'
-		student = query_db(query, [student_id])[0]
+		student = query_db(query, [student_pk])[0]
 		return render_template('student_update.html', student=student)
 	elif request.method == 'POST':
 		query = 'UPDATE student SET first_name=:first_name, last_name=:last_name, alias=:alias, grad_year=:grad_year, email=:email WHERE pk=:pk'
-		args = dict(request.form.to_dict(flat=True), pk=student_id)
+		args = dict(request.form.to_dict(flat=True), pk=student_pk)
 		g.db.execute(query, args)
 		g.db.commit()
-		return redirect(url_for('student_view', student_id=student_id))
+		return redirect(url_for('student_view', student_pk=student_pk))
 
-@app.route('/students/delete/<int:student_id>/', methods=['GET', 'POST'])
-def student_delete(student_id):
+@app.route('/students/delete/<int:student_pk>/', methods=['GET', 'POST'])
+def student_delete(student_pk):
 	if request.method == 'GET':
-		student = query_db('SELECT * FROM student WHERE pk=?', [student_id])[0]
+		student = query_db('SELECT * FROM student WHERE pk=?', [student_pk])[0]
 		return render_template('student_delete.html', student=student)
 	if request.method == 'POST':
-		g.db.execute('DELETE FROM student WHERE pk=?', [student_id])
+		g.db.execute('DELETE FROM student WHERE pk=?', [student_pk])
 		g.db.commit()
 		return redirect(url_for('students'))
 
@@ -134,46 +134,46 @@ def assignment_create():
 		if "create_and_add" in request.form:
 			return render_template('assignment_create.html')
 		elif "create" in request.form:
-			return redirect(url_for('assignment_view', assignment_id=cur.lastrowid))
+			return redirect(url_for('assignment_view', assignment_pk=cur.lastrowid))
 
-@app.route('/assignments/view/<int:assignment_id>/')
-def assignment_view(assignment_id):
+@app.route('/assignments/view/<int:assignment_pk>/')
+def assignment_view(assignment_pk):
 	assignment_query = 'SELECT * FROM assignment WHERE pk=?'
-	assignment = query_db(assignment_query, [assignment_id])[0]
+	assignment = query_db(assignment_query, [assignment_pk])[0]
 	students_grade_query = """
 		SELECT student.first_name, student.last_name, grade.points 
 		FROM student LEFT JOIN grade 
 		ON grade.student_pk = student.pk AND grade.assignment_pk=? 
 		ORDER BY student.first_name, student.last_name, student.pk"""
-	students_grade = query_db(students_grade_query, [assignment_id])
+	students_grade = query_db(students_grade_query, [assignment_pk])
 	return render_template('assignment_view.html', assignment=assignment,
 			students_grade=students_grade)
 
-@app.route('/assignments/update/<int:assignment_id>/', methods=['GET', 'POST'])
-def assignment_update(assignment_id):
+@app.route('/assignments/update/<int:assignment_pk>/', methods=['GET', 'POST'])
+def assignment_update(assignment_pk):
 	if request.method == 'GET':
 		query = 'SELECT * FROM assignment WHERE pk=?'
-		assignment = query_db(query, [assignment_id])[0]
+		assignment = query_db(query, [assignment_pk])[0]
 		return render_template('assignment_update.html', assignment=assignment)
 	elif request.method == 'POST':
 		query = 'UPDATE assignment SET name=:name, description=:description, due_date=date(:due_date), points=:points WHERE pk=:pk'
-		args = dict(request.form.to_dict(flat=True), pk=assignment_id)
+		args = dict(request.form.to_dict(flat=True), pk=assignment_pk)
 		g.db.execute(query, args)
 		g.db.commit()
 		return redirect(url_for('assignments'))
 
-@app.route('/assignment/update_grades/<int:assignment_id>/', methods=['GET', 'POST'])
-def assignment_grades_update(assignment_id):
+@app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
+def assignment_grades_update(assignment_pk):
 	if request.method == 'GET':
 		assignment_query = 'SELECT * from assignment WHERE pk=?'
-		assignment = query_db(assignment_query, [assignment_id])[0]
+		assignment = query_db(assignment_query, [assignment_pk])[0]
 		students_grade_query = """
 			SELECT student.first_name, student.last_name, student.pk,
 				grade.points
 			FROM student LEFT JOIN grade 
 			ON grade.student_pk = student.pk AND grade.assignment_pk=? 
 			ORDER BY student.first_name, student.last_name, student.pk"""
-		students_grade = query_db(students_grade_query, [assignment_id])
+		students_grade = query_db(students_grade_query, [assignment_pk])
 		return render_template("assignment_grades_update.html",
 				assignment=assignment, students_grade=students_grade)
 	if request.method == 'POST':
@@ -182,7 +182,7 @@ def assignment_grades_update(assignment_id):
 			SELECT student_pk 
 			FROM grade 
 			WHERE assignment_pk=?"""
-		graded_students = g.db.execute(graded_students_query, [assignment_id])
+		graded_students = g.db.execute(graded_students_query, [assignment_pk])
 		graded_students = graded_students.fetchall()
 		graded_students = [row[0] for row in graded_students]
 		for key, value in request.form.iteritems():
@@ -195,24 +195,24 @@ def assignment_grades_update(assignment_id):
 					UPDATE grade
 					SET points=? 
 					WHERE student_pk=? AND assignment_pk=?""",
-					[points, student_pk, assignment_id])
+					[points, student_pk, assignment_pk])
 			else: #grade does not already exist, so create it
 				g.db.execute("""
 					INSERT INTO grade
 					(student_pk, assignment_pk, points)
 					VALUES (?, ?, ?)""",
-					[student_pk, assignment_id, points])
+					[student_pk, assignment_pk, points])
 		g.db.commit()
 		return redirect(url_for('assignment_view',
-			assignment_id=assignment_id))
+			assignment_pk=assignment_pk))
 
-@app.route('/assignments/delete/<int:assignment_id>/', methods=['GET', 'POST'])
-def assignment_delete(assignment_id):
+@app.route('/assignments/delete/<int:assignment_pk>/', methods=['GET', 'POST'])
+def assignment_delete(assignment_pk):
 	if request.method == 'GET':
-		assignment = query_db('SELECT * FROM assignment WHERE pk=?', [assignment_id])[0]
+		assignment = query_db('SELECT * FROM assignment WHERE pk=?', [assignment_pk])[0]
 		return render_template('assignment_delete.html', assignment=assignment)
 	if request.method == 'POST':
-		g.db.execute('DELETE FROM assignment WHERE pk=?', [assignment_id])
+		g.db.execute('DELETE FROM assignment WHERE pk=?', [assignment_pk])
 		g.db.commit()
 		return redirect(url_for('assignments'))
 

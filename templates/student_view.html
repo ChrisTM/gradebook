@@ -2,7 +2,7 @@
 {% block title %}Update a Student{% endblock %}
 {% block content %}
 <h1>Student: {{ student.first_name }} {{ student.last_name }}</h1>
-<p><a href="{{ url_for('student_update', student_id=student.pk) }}">Edit this student's info</a> or <a href="{{ url_for('student_delete', student_id=student.pk) }}">delete this student.</a></p>
+<p><a href="{{ url_for('student_update', student_pk=student.pk) }}">Edit this student's info</a> or <a href="{{ url_for('student_delete', student_pk=student.pk) }}">delete this student.</a></p>
 <table>
 	<tr>
 		<th>Name: </th>

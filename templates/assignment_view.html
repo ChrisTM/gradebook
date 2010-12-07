@@ -2,10 +2,10 @@
 {% block title %}Assignment: {{ assignment.name }}{% endblock %}
 {% block content %}
 <h1>Assignment: {{ assignment.name }}</h1>
-<p><a href="{{ url_for('assignment_delete', assignment_id=assignment.pk) }}">Delete this assignment.</a></p>
+<p><a href="{{ url_for('assignment_delete', assignment_pk=assignment.pk) }}">Delete this assignment.</a></p>
 
 <h2>Assignment Info</h2>
-<p><a href="{{ url_for('assignment_update', assignment_id=assignment.pk) }}">Edit this info.</a></p>
+<p><a href="{{ url_for('assignment_update', assignment_pk=assignment.pk) }}">Edit this info.</a></p>
 <table>
 	<tr>
 		<th>Name: </th>
@@ -26,7 +26,7 @@
 </table>
 
 <h2>Grades</h2>
-<p><a href="{{ url_for('assignment_grades_update', assignment_id=assignment.pk) }}">Edit this info.</a></p>
+<p><a href="{{ url_for('assignment_grades_update', assignment_pk=assignment.pk) }}">Edit this info.</a></p>
 <table border="1">
 	<thead>
 		<tr>
