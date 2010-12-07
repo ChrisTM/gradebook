@@ -186,17 +186,24 @@ def assignment_grades_update(assignment_pk):
 		graded_students = graded_students.fetchall()
 		graded_students = [row[0] for row in graded_students]
 		for key, value in request.form.iteritems():
-			if value == "":
-				continue
-			points = int(value)
 			student_pk = int(key[len("student_"):]) #Strips off "student_"
 			if student_pk in graded_students:
-				g.db.execute("""
-					UPDATE grade
-					SET points=? 
-					WHERE student_pk=? AND assignment_pk=?""",
-					[points, student_pk, assignment_pk])
+				if value == "":
+					g.db.execute("""
+						DELETE FROM grade
+						WHERE student_pk=? AND assignment_pk=?""",
+						[student_pk, assignment_pk])
+					g.db.commit()
+				else:
+					# TODO: Sanitize here. Message flash on error.
+					points = int(value)
+					g.db.execute("""
+						UPDATE grade
+						SET points=? 
+						WHERE student_pk=? AND assignment_pk=?""",
+						[points, student_pk, assignment_pk])
 			else: #grade does not already exist, so create it
+				points = int(value)
 				g.db.execute("""
 					INSERT INTO grade
 					(student_pk, assignment_pk, points)

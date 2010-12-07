@@ -1,3 +1,4 @@
+  - Zero valued grades don't render in the templates!
   - Maybe change points -> grade in the grade table. 
   - Create a UNIQUE constraint on the grades table for the pairing of assignment and student pks.
   - The ordering of student names is not consistent across pages.
