@@ -1,6 +1,5 @@
-  - Zero valued grades don't render in the templates!
+  - Zero valued grades don't render in the templates! This is because it's actually zero, and not a string. Zero evaluates to false. So empty string gets printed.
   - Maybe change points -> grade in the grade table. 
-  - Create a UNIQUE constraint on the grades table for the pairing of assignment and student pks.
   - The ordering of student names is not consistent across pages.
   - Message flashing for things like user creation. (Message in base.html, probably)
   - DRY up the forms.

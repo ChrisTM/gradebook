@@ -10,6 +10,14 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 
+def invisible_none(value):
+	"""A finalizer for Jinja2 to let None values not be rendered."""
+	if value is None:
+		return ''
+	return value
+
+app.jinja_env.finalize = invisible_none
+
 
 def connect_db():
     """Return a connection to the gradebook database"""

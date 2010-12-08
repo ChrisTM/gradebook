@@ -6,7 +6,7 @@
 		{% for student in students_grade %}
 		<tr>
 			<td>{{ student.first_name }} {{ student.last_name }}</td>
-			<td><input type="text" name="student_{{ student.pk }}" value="{{ student.points or '' }}"></td>
+			<td><input type="text" name="student_{{ student.pk }}" value="{{ student.points }}"></td>
 		</tr>
 		{% endfor %}
 	</table>

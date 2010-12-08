@@ -15,7 +15,7 @@
 		<tr>
 			<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.first_name }} {{ student.last_name }}</a></td>
 			{% for grade in student.grades %}
-			<td>{{ grade or '' }}</td>
+			<td>{{ grade }}</td>
 			{% endfor %}
 		</tr>
 		{% endfor %}
