@@ -1,3 +1,4 @@
+  - Add workflow to edit grades from a student's page.
   - Add grade comment adding ability.
   - Add assignment notes adding ability.
   - Add comments section to public gradebook.

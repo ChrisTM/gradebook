@@ -2,89 +2,93 @@ import sqlite3
 from gradebook import app
 from contextlib import closing
 
-def init_db():
-    with closing(sqlite3.connect(app.config['DATABASE'])) as db:
-        with app.open_resource("schema.sql") as f:
-            db.cursor().executescript(f.read())
-        with app.open_resource("testdata.sql") as f:
-            db.cursor().executescript(f.read())
-        db.commit()
+class Database(object):
+	def __init__(self, database_name):
+		"""Create an Database object associated with sqlite3 file
+		`database_name`"""
+		self.database_name = database_name
 
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
+	def init_db(self):
+		with closing(self.connect()) as db:
+			with app.open_resource("schema.sql") as f:
+				db.cursor().executescript(f.read())
+			with app.open_resource("testdata.sql") as f:
+				db.cursor().executescript(f.read())
+			db.commit()
 
-class Model(object):
-    """A superclass for all active records."""
-    db = connect_db()
-    _table = None #Name of the table
-    def __init__(self):
-        self._in_db = False #True, if the object was pulled from the db
+	def connect(self):
+		"""Return a connection to the gradebook database"""
+		self.con = sqlite3.connect(self.database_name)
+		self.con.row_factory = sqlite3.Row
+		return self.con
 
-    @classmethod
-    def _query_db(cls, query, args=()):
-        """Return a list of dictionaries representing the results of
-        cursor.execute(query, args)"""
-        cursor = cls.db.execute(query, args)
-        attributes = [x[0] for x in cursor.description]
-        rows = [dict(zip(attributes, row)) for row in cursor.fetchall()]
-        return rows
+	def execute(self, query, args=None, commit=True):
+		cur = self.con.cursor()
+		res = cur.execute(query, args or ())
+		if commit:
+			self.con.commit()
+		return res
 
-    @classmethod
-    def get(cls, pk=None):
-        if pk:
-            return cls._query_db("SELECT * FROM ? WHERE pk=?;", 
-                    (cls._table, pk, ))
-        else:
-            return cls._query_db("SELECT * FROM ?;", (cls._table, ))
+	def close():
+		self.con.close()
 
-    def update(self):
-        pass
-
-    def delete(self, pk=None):
-        pass
-
-    def save(self):
-        """INSERT or UPDATE the object into the db as necessary."""
-        pass
+db = Database(app.config['DATABASE'])
+db.connect()
 
 
-class Person(Model):
-    def __init__(self, pk=None, first_name=None, last_name=None, alias=None,
-            grad_year=None, email=None, in_db=False):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.alias = alias
-        self.grad_year = grad_year
-        self.email = email
-        self._in_db = in_db
+class Student(object):
+	def __init__(self, pk=None, first_name=None, last_name=None, alias=None,
+			grad_year=None, email=None):
+		self.pk = pk
+		self.first_name = first_name
+		self.last_name = last_name
+		self.alias = alias
+		self.grad_year = grad_year
+		self.email = email
+		self._in_db = False
 
-    def save(self):
-        pass
+	def full_name(self):
+		return ' '.join([self.first_name, self.last_name])
 
-    def __str__(self):
-        if self.first_name and self.last_name:
-            return "{0} {1}".format(self.first_name, self.last_name)
-        if self.first_name:
-            return self.first_name
-        if self.last_name:
-            return self.last_name
+	@classmethod
+	def _from_row(cls, row_object):
+		obj = cls()
+		for key in row_object.keys():
+			setattr(obj, key, row_object[key])
+		obj._in_db = True
+		return obj
 
-    @classmethod
-    def get(cls, pk=None):
-        if pk:
-            return cls._query_db("SELECT * FROM person WHERE pk=?;", (pk, ))
-        else:
-            return cls._query_db("SELECT * FROM person;")
+	@classmethod
+	def get(cls, pk=None):
+		cur = db.execute("SELECT * FROM student WHERE pk=?", (pk, ))
+		row = cur.fetchone()
+		obj = cls._from_row(row)
+		return obj
 
+	@classmethod
+	def all(cls):
+		cur = db.execute("SELECT * FROM student")
+		rows = cur.fetchall()
+		objs = [cls._from_row(row) for row in rows]
+		return objs
 
-class Assignment(Model):
-    pass
+	def save(self):
+		if self._in_db:
+			query = """UPDATE student SET first_name=?, last_name=?, alias=?,
+			grad_year=?, email=?  WHERE pk=?"""
+			args = [self.first_name, self.last_name, self.alias,
+					self.grad_year, self.email, self.pk]
+			db.execute(query, args)
+		else:
+			query = """INSERT INTO student (first_name, last_name, alias,
+			grad_year, email) VALUES (?, ?, ?, ?, ?)"""
+			args = [self.first_name, self.last_name, self.alias,
+					self.grad_year, self.email]
+			cur = db.execute(query, args)
+			self.pk = cur.lastrowid
 
-class Grade(Model):
-    pass
-
-if __name__ == "__main__":
-    #init_db()
-    print Person.get()
-
-    p = Person(first_name="Chris")
+	def delete(self):
+		if self._in_db:
+			query = "DELETE FROM student WHERE pk=?"
+			args = [self.pk]
+			db.execute(query, args)
