@@ -71,9 +71,28 @@ def gradebook():
 		#TODO: This gets the grades (nulls for ungraded too!)
 		grades = query_db(grades_query, (str(student['pk'])))
 		student['grades'] = [row['points'] for row in grades]
-	print assignments
-	print students
 	return render_template("gradebook.html", assignments=assignments,
+			students=students)
+
+@app.route('/public_gradebook/')
+def public_gradebook():
+	#TODO: This method scares me. Seek help. Improve this.
+	assignments = query_db("SELECT pk, name, points \
+			FROM assignment \
+			ORDER BY assignment.due_date, assignment.pk")
+	students = query_db("SELECT pk, alias \
+			FROM student \
+			ORDER BY alias, student.pk")
+	grades_query = "SELECT assignment.pk, grade.points \
+			FROM assignment \
+			LEFT JOIN grade ON grade.assignment_pk = assignment.pk \
+				AND grade.student_pk = ? \
+			ORDER BY assignment.due_date, assignment.pk;"
+	for student in students:
+		#TODO: This gets the grades (nulls for ungraded too!)
+		grades = query_db(grades_query, (str(student['pk'])))
+		student['grades'] = [row['points'] for row in grades]
+	return render_template("public_gradebook.html", assignments=assignments,
 			students=students)
 
 

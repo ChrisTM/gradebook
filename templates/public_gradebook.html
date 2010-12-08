@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Grades for CS 107 (Fall 2010)</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" /> 
+	<link rel="stylesheet" href="/static/public_gradebook.css" type="text/css" />
+</head>
+<body>
+	<h1>Class Grades</h1>
+	<h2>The Grades</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Alias</th>
+				{% for assignment in assignments %}
+				<th><a title="See comments concerning this homework..." href="#HW{{ assignment.pk }}">{{ assignment.name }}</a></th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><em>Best Possible</em></td>
+				{% for assignment in assignments %}
+				<td><em>{{ assignment.points }}</em></td>
+				{% endfor %}
+			</tr>
+			{% for student in students %}
+			<tr>
+				<td><a title="Jump to this person’s comments..." href="#Student{{ student.pk }}">{{ student.alias }}</a></td>
+				{% for grade in student.grades %}
+				<td>{{ grade }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+	<h2>The Comments</h2>
+	<!-- 
+	<h3 id="Student0">A codeword.</h3>
+	<h4>HW 1</h4>
+	<p>The definition you wrote for “computer science” is somewhat redundant.</p>
+
+	-->
+
+	<h2>Notes on the HW</h2>
+	<!--
+	<h3 id="HW2">HW 2</h3>
+	<p>Simply put, GET is a command that will <em>download</em> something from a server, while PUT will cause something to be <em>uploaded</em> to a server.</p>
+
+	-->
+
+</body>
+</html>

@@ -26,16 +26,16 @@ Features
 
 Must Have
 ---------
-Student, assignment, grade creation.
-Public grades page.
+☑ Student, assignment, grade creation.
+☐ Public grades page.
 
 Nice Features
 -------------
-Multiple classes
-Grade percent calculations
-Assignment categories (exam, quiz, homework, etc. to allow weighting/extra credit)
-Private grades page.
-Sortable tables
+☐ Multiple classes
+☐ Grade percent calculations
+☐ Assignment categories (exam, quiz, homework, etc. to allow weighting/extra credit)
+☐ Private grades page.
+☐ Sortable tables
 
 
 Unecessary
