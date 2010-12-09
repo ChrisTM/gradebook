@@ -1,6 +1,7 @@
 import sqlite3
-from gradebook import app
 from contextlib import closing
+
+DATABASE = "./gradebook.db"
 
 class Database(object):
 	def __init__(self, database_name):
@@ -10,9 +11,9 @@ class Database(object):
 
 	def init_db(self):
 		with closing(self.connect()) as db:
-			with app.open_resource("schema.sql") as f:
+			with open("schema.sql") as f:
 				db.cursor().executescript(f.read())
-			with app.open_resource("testdata.sql") as f:
+			with open("testdata.sql") as f:
 				db.cursor().executescript(f.read())
 			db.commit()
 
@@ -24,16 +25,15 @@ class Database(object):
 
 	def execute(self, query, args=None, commit=True):
 		cur = self.con.cursor()
-		res = cur.execute(query, args or ())
+		cur.execute(query, args or ())
 		if commit:
 			self.con.commit()
-		return res
+		return cur
 
-	def close():
+	def close(self):
 		self.con.close()
 
-db = Database(app.config['DATABASE'])
-db.connect()
+db = Database(DATABASE)
 
 class Model(object):
 	_table_name = None
@@ -77,7 +77,8 @@ class Model(object):
 
 	def delete(self):
 		if self._in_db:
-			query = "DELETE FROM {0} WHERE pk=?".format(cls._table_name)
+			query = "DELETE FROM {0} WHERE pk=?".format(
+					self.__class__._table_name)
 			args = (self.pk, )
 			db.execute(query, args)
 

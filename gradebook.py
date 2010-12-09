@@ -1,8 +1,7 @@
 import sqlite3
 from flask import Flask, g, url_for, redirect, render_template, request
-from contextlib import closing
+from model import Student, Assignment, Grade, db
 
-DATABASE = "./gradebook.db"
 DEBUG = True
 SECRET_KEY = "'K\xaf\xd2\xc7\xc2#J\x05s%\x99J\x8e\xda\x85\xbe<t\xb2\xea\xab\xa7\xa4\xef'"
 
@@ -19,34 +18,20 @@ def invisible_none(value):
 app.jinja_env.finalize = invisible_none
 
 
-def connect_db():
-    """Return a connection to the gradebook database"""
-    return sqlite3.connect(app.config['DATABASE'])
-
-def init_db():
-    with closing(sqlite3.connect(app.config['DATABASE'])) as db:
-        with app.open_resource("schema.sql") as f:
-            db.cursor().executescript(f.read())
-        with app.open_resource("testdata.sql") as f:
-            db.cursor().executescript(f.read())
-        db.commit()
-
-def query_db(query, args=()):
-    """Return a list of dictionaries representing the results of
-    cursor.execute(query, args)"""
-    cursor = g.db.execute(query, args)
-    attributes = [row_info[0] for row_info in cursor.description]
-    rows = [dict(zip(attributes, row)) for row in cursor.fetchall()]
-    return rows
-
 @app.before_request
 def before_request():
-    g.db = connect_db()
+	# I have to connect to the database from here, and not the main thread,
+	# because if I made the connection in model.py for eg. and not the main
+	# thread, then when I try to use the model subclasses to access the
+	# database in the views in gradebook.py, then the db connection is going
+	# to be accessed by *not* the main thread. I think there's probably a
+	# more elegant solution. TODO?
+    db.connect()
 
 @app.after_request
 def after_request(response):
-    g.db.close()
-    return response
+	db.close()
+	return response
 
 
 @app.route('/')
@@ -55,51 +40,35 @@ def index():
 
 @app.route('/gradebook/')
 def gradebook():
-	#TODO: This method scares me. Seek help. Improve this.
-	assignments = query_db("SELECT pk, name, points \
-			FROM assignment \
-			ORDER BY assignment.due_date, assignment.pk")
-	students = query_db("SELECT pk, first_name, last_name \
-			FROM student \
-			ORDER BY last_name, first_name, student.pk")
-	grades_query = "SELECT assignment.pk, grade.points \
-			FROM assignment \
-			LEFT JOIN grade ON grade.assignment_pk = assignment.pk \
-				AND grade.student_pk = ? \
-			ORDER BY assignment.due_date, assignment.pk;"
+	assignments = Assignment.all()
+	students = Student.all()
+	assignment_pks = [a.pk for a in assignments]
 	for student in students:
-		#TODO: This gets the grades (nulls for ungraded too!)
-		grades = query_db(grades_query, (str(student['pk'])))
-		student['grades'] = [row['points'] for row in grades]
+		# Set the grades following the order specified by assignment_pks
+		grades = student.get_grades()
+		by_assignment_pk = dict([(g.assignment_pk, g) for g in grades])
+		student.grades = [by_assignment_pk.get(pk) for pk in assignment_pks]
 	return render_template("gradebook.html", assignments=assignments,
 			students=students)
 
 @app.route('/public_gradebook/')
 def public_gradebook():
-	#TODO: This method scares me. Seek help. Improve this.
-	assignments = query_db("SELECT pk, name, points \
-			FROM assignment \
-			ORDER BY assignment.due_date, assignment.pk")
-	students = query_db("SELECT pk, alias \
-			FROM student \
-			ORDER BY alias, student.pk")
-	grades_query = "SELECT assignment.pk, grade.points \
-			FROM assignment \
-			LEFT JOIN grade ON grade.assignment_pk = assignment.pk \
-				AND grade.student_pk = ? \
-			ORDER BY assignment.due_date, assignment.pk;"
+	assignments = Assignment.all()
+	students = Student.all()
+	assignment_pks = [a.pk for a in assignments]
 	for student in students:
-		#TODO: This gets the grades (nulls for ungraded too!)
-		grades = query_db(grades_query, (str(student['pk'])))
-		student['grades'] = [row['points'] for row in grades]
+		# Set the grades following the order specified by assignment_pks
+		grades = student.get_grades()
+		by_assignment_pk = dict([(g.assignment_pk, g) for g in grades])
+		student.grades = [by_assignment_pk.get(pk) for pk in assignment_pks]
 	return render_template("public_gradebook.html", assignments=assignments,
 			students=students)
 
 
 @app.route('/students/')
 def students():
-    students = query_db('SELECT * FROM student ORDER BY first_name')
-    return render_template('student_list.html', students=students)
+	students = Student.all()
+	return render_template('student_list.html', students=students)
 
 @app.route('/students/create/', methods=['GET', 'POST'])
 def student_create():
@@ -115,8 +84,7 @@ def student_create():
 
 @app.route('/students/view/<int:student_pk>/')
 def student_view(student_pk):
-	student_query = "SELECT * FROM student WHERE pk=?"
-	student = query_db(student_query, [student_pk])[0]
+	student = Student.get(pk=student_pk)
 	return render_template("student_view.html", student=student)
 
 @app.route('/students/update/<int:student_pk>/', methods=['GET', 'POST'])
@@ -134,19 +102,18 @@ def student_update(student_pk):
 
 @app.route('/students/delete/<int:student_pk>/', methods=['GET', 'POST'])
 def student_delete(student_pk):
+	student = Student.get(pk=student_pk)
 	if request.method == 'GET':
-		student = query_db('SELECT * FROM student WHERE pk=?', [student_pk])[0]
 		return render_template('student_delete.html', student=student)
 	if request.method == 'POST':
-		g.db.execute('DELETE FROM student WHERE pk=?', [student_pk])
-		g.db.commit()
+		student.delete()
 		return redirect(url_for('students'))
 
 
 @app.route('/assignments/')
 def assignments():
-    assignments = query_db('SELECT * FROM assignment')
-    return render_template('assignment_list.html', assignments=assignments)
+	assignments = Assignment.all()
+	return render_template('assignment_list.html', assignments=assignments)
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
@@ -165,16 +132,15 @@ def assignment_create():
 
 @app.route('/assignments/view/<int:assignment_pk>/')
 def assignment_view(assignment_pk):
-	assignment_query = 'SELECT * FROM assignment WHERE pk=?'
-	assignment = query_db(assignment_query, [assignment_pk])[0]
-	students_grade_query = """
-		SELECT student.first_name, student.last_name, grade.points 
-		FROM student LEFT JOIN grade 
-		ON grade.student_pk = student.pk AND grade.assignment_pk=? 
-		ORDER BY student.first_name, student.last_name, student.pk"""
-	students_grade = query_db(students_grade_query, [assignment_pk])
+	assignment = Assignment.get(pk=assignment_pk)
+	students = Student.all()
+	grades = assignment.get_grades()
+	student_pks = [s.pk for s in students]
+	g_by_student_pk = dict([(g.student_pk, g) for g in grades])
+	for s in students:
+		s.grade = g_by_student_pk.get(s.pk)
 	return render_template('assignment_view.html', assignment=assignment,
-			students_grade=students_grade)
+			students=students)
 
 @app.route('/assignments/update/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_update(assignment_pk):
@@ -223,6 +189,8 @@ def assignment_grades_update(assignment_pk):
 					g.db.commit()
 				else:
 					# TODO: Sanitize here. Message flash on error.
+					# TODO: This would be a good place to use executemany.
+					# Assuming that's more efficient.
 					points = int(value)
 					g.db.execute("""
 						UPDATE grade
@@ -242,12 +210,12 @@ def assignment_grades_update(assignment_pk):
 
 @app.route('/assignments/delete/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_delete(assignment_pk):
+	assignment = Assignment.get(pk=assignment_pk)
 	if request.method == 'GET':
-		assignment = query_db('SELECT * FROM assignment WHERE pk=?', [assignment_pk])[0]
-		return render_template('assignment_delete.html', assignment=assignment)
+		return render_template('assignment_delete.html',
+				assignment=assignment)
 	if request.method == 'POST':
-		g.db.execute('DELETE FROM assignment WHERE pk=?', [assignment_pk])
-		g.db.commit()
+		assignment.delete()
 		return redirect(url_for('assignments'))
 
 

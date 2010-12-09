@@ -29,7 +29,7 @@
 			<tr>
 				<td><a title="Jump to this person’s comments..." href="#Student{{ student.pk }}">{{ student.alias }}</a></td>
 				{% for grade in student.grades %}
-				<td>{{ grade }}</td>
+				<td>{{ grade.points }}</td>
 				{% endfor %}
 			</tr>
 			{% endfor %}

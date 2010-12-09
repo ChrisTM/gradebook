@@ -13,5 +13,5 @@
   - Form validation on creation
   - HTML labels on forms
   - CSSed forms http://www.cssdrive.com/index.php/examples/exampleitem/tableless_forms/
+  - Assignment/Student deletions don't cascade and cause grade deletions.
   - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
-  - Investigate SQL cascades for when deleting assignments (grades get deleted) or students (grades get deleted).

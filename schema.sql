@@ -28,9 +28,4 @@ CREATE TABLE grade (
 	UNIQUE (student_pk, assignment_pk) --It doesn't make sense to have more than one grade for the same assignment per person.
 );
 
-CREATE VIEW assignment_grade
-AS SELECT grade.student_pk, grade.assignment_pk, grade.points, grade.comment 
-FROM assignment JOIN grade 
-ON assignment.pk = grade.assignment_pk;
-
 COMMIT;
