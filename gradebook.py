@@ -56,7 +56,7 @@ def index():
 @app.route('/gradebook/')
 def gradebook():
 	#TODO: This method scares me. Seek help. Improve this.
-	assignments = query_db("SELECT pk, name \
+	assignments = query_db("SELECT pk, name, points \
 			FROM assignment \
 			ORDER BY assignment.due_date, assignment.pk")
 	students = query_db("SELECT pk, first_name, last_name \
