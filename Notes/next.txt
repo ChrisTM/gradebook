@@ -1,8 +1,10 @@
-  - Add workflow to edit grades from a student's page.
+  - Finish adding the editing portion for grades on the assignment view
   - Add grade comment adding ability.
   - Add assignment notes adding ability.
-  - Add comments section to public gradebook.
-  - Add assignment notes section to public gradebook.
+  - Update templates for grade and assignment comments (CRUD and public view)
+  - Assignment/Student deletions don't cascade and cause grade deletions.
+
+  - Add workflow to edit grades from a student's page.
   - Maybe change points -> grade in the grade table. 
   - The ordering of student names is not consistent across pages.
   - Message flashing for things like user creation. (Message in base.html, probably)
@@ -13,5 +15,5 @@
   - Form validation on creation
   - HTML labels on forms
   - CSSed forms http://www.cssdrive.com/index.php/examples/exampleitem/tableless_forms/
-  - Assignment/Student deletions don't cascade and cause grade deletions.
   - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
+  - Why was I using that query_db function that I adapted from the Flask docs? Shouldn't we be able to get an equivalent functionality from changing sqlite's row_factory to sqlite3.Row? If the problem is passing those objects between threads (does this problem exist, though?) it seems we can do dict(row) to remove the sqlite typing. But.... wait. That thread thing is only with connections and cursors, right? So that's a non-issue.

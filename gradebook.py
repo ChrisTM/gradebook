@@ -26,7 +26,7 @@ def before_request():
 	# database in the views in gradebook.py, then the db connection is going
 	# to be accessed by *not* the main thread. I think there's probably a
 	# more elegant solution. TODO?
-    db.connect()
+	db.connect()
 
 @app.after_request
 def after_request(response):
@@ -75,12 +75,18 @@ def student_create():
 	if request.method == "GET":
 		return render_template('student_create.html')
 	elif request.method == "POST":
-		cur = g.db.execute('INSERT INTO student (first_name, last_name, alias, grad_year, email) values (:first_name, :last_name, :alias, :grad_year, :email)', request.form)
-		g.db.commit()
+		student = Student(
+				first_name = request.form['first_name'],
+				last_name = request.form['last_name'],
+				alias = request.form['alias'],
+				grad_year = request.form['grad_year'],
+				email = request.form['email'],
+				)
+		student.save()
 		if "create_and_add" in request.form:
 			return render_template('student_create.html')
 		elif "create" in request.form:
-			return redirect(url_for('student_view', student_pk=cur.lastrowid))
+			return redirect(url_for('student_view', student_pk=student.pk))
 
 @app.route('/students/view/<int:student_pk>/')
 def student_view(student_pk):
@@ -89,15 +95,16 @@ def student_view(student_pk):
 
 @app.route('/students/update/<int:student_pk>/', methods=['GET', 'POST'])
 def student_update(student_pk):
+	student = Student.get(pk=student_pk)
 	if request.method == 'GET':
-		query = 'SELECT * FROM student WHERE pk=?'
-		student = query_db(query, [student_pk])[0]
 		return render_template('student_update.html', student=student)
 	elif request.method == 'POST':
-		query = 'UPDATE student SET first_name=:first_name, last_name=:last_name, alias=:alias, grad_year=:grad_year, email=:email WHERE pk=:pk'
-		args = dict(request.form.to_dict(flat=True), pk=student_pk)
-		g.db.execute(query, args)
-		g.db.commit()
+		student.first_name = request.form['first_name']
+		student.last_name = request.form['last_name']
+		student.alias = request.form['alias']
+		student.grad_year = request.form['grad_year']
+		student.email = request.form['email']
+		student.save()
 		return redirect(url_for('student_view', student_pk=student_pk))
 
 @app.route('/students/delete/<int:student_pk>/', methods=['GET', 'POST'])
@@ -117,18 +124,23 @@ def assignments():
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
+	print request.form
 	if request.method == 'GET':
 		return render_template('assignment_create.html')
 	elif request.method == 'POST':
-		cur = g.db.execute("""
-				INSERT INTO assignment (name, description, due_date, points) 
-				VALUES (:name, :description, :due_date, :points)
-				""", request.form)
-		g.db.commit()
+		assignment = Assignment(
+				name = request.form['name'],
+				description = request.form['description'],
+				#comments = request.form['comments'], #This causes an HTTP 400 when a value wasn't submitted in the form (because of a KeyError on the MultiDict). How stupid!
+				due_date = request.form['due_date'],
+				points = request.form['points'],
+				)
+		assignment.save()
 		if "create_and_add" in request.form:
 			return render_template('assignment_create.html')
 		elif "create" in request.form:
-			return redirect(url_for('assignment_view', assignment_pk=cur.lastrowid))
+			return redirect(url_for('assignment_view',
+				assignment_pk=assignment.pk))
 
 @app.route('/assignments/view/<int:assignment_pk>/')
 def assignment_view(assignment_pk):
@@ -144,16 +156,20 @@ def assignment_view(assignment_pk):
 
 @app.route('/assignments/update/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_update(assignment_pk):
+	assignment = Assignment.get(pk=assignment_pk)
 	if request.method == 'GET':
-		query = 'SELECT * FROM assignment WHERE pk=?'
-		assignment = query_db(query, [assignment_pk])[0]
-		return render_template('assignment_update.html', assignment=assignment)
+		return render_template('assignment_update.html',
+				assignment=assignment)
 	elif request.method == 'POST':
 		query = 'UPDATE assignment SET name=:name, description=:description, due_date=date(:due_date), points=:points WHERE pk=:pk'
-		args = dict(request.form.to_dict(flat=True), pk=assignment_pk)
-		g.db.execute(query, args)
-		g.db.commit()
-		return redirect(url_for('assignments'))
+		assignment.name = request.form['name']
+		assignment.description = request.form['description']
+		#assignment.comments = request.form['comments'] #Need to update the form to include this first, or else a 400 status code will occur
+		assignment.due_date = request.form['due_date']
+		assignment.points = request.form['points']
+		assignment.save()
+		return redirect(url_for('assignment_view',
+			assignment_pk=assignment.pk))
 
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):

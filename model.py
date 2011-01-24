@@ -88,13 +88,13 @@ class Student(Model):
 
 	def __init__(self, pk=None, first_name=None, last_name=None, alias=None,
 			grad_year=None, email=None):
+		super(Student, self).__init__()
 		self.pk = pk
 		self.first_name = first_name
 		self.last_name = last_name
 		self.alias = alias
 		self.grad_year = grad_year
 		self.email = email
-		self._in_db = False
 
 	def full_name(self):
 		return ' '.join([self.first_name, self.last_name])
@@ -132,6 +132,7 @@ class Assignment(Model):
 
 	def __init__(self, pk=None, name=None, description=None, due_date=None,
 			points=None):
+		super(Assignment, self).__init__()
 		self.pk = pk
 		self.name = name
 		self.description = description
