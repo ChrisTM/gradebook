@@ -84,7 +84,7 @@ class Model(object):
 
 class Student(Model):
 	_table_name = 'student'
-	_default_order = 'last_name, first_name, pk'
+	_default_order = 'first_name, last_name, pk'
 
 	def __init__(self, pk=None, first_name=None, last_name=None, alias=None,
 			grad_year=None, email=None):
@@ -128,7 +128,7 @@ class Student(Model):
 
 class Assignment(Model):
 	_table_name = 'assignment'
-	_default_order = 'due_date, name, pk'
+	_default_order = '-due_date, name, pk'
 
 	def __init__(self, pk=None, name=None, description=None, due_date=None,
 			points=None):

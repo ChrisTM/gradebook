@@ -32,6 +32,7 @@
 		<tr>
 			<th>Student</th>
 			<th>Points</th>
+			<th>Comment</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -39,6 +40,7 @@
 		<tr>
 			<td>{{ student.first_name }} {{ student.last_name }}</td>
 			<td>{{ student.grade.points }}</td>
+			<td>{{ student.grade.comment }}</td>
 		</tr>
 		{% endfor %}
 	</tbody>

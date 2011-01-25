@@ -1,5 +1,3 @@
-  - Finish adding the editing portion for grades on the assignment view
-  - Add grade comment adding ability.
   - Add assignment notes adding ability.
   - Update templates for grade and assignment comments (CRUD and public view)
   - Assignment/Student deletions don't cascade and cause grade deletions.

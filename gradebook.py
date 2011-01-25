@@ -1,4 +1,5 @@
 import sqlite3
+import re
 from flask import Flask, g, url_for, redirect, render_template, request
 from model import Student, Assignment, Grade, db
 
@@ -124,14 +125,13 @@ def assignments():
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
-	print request.form
 	if request.method == 'GET':
 		return render_template('assignment_create.html')
 	elif request.method == 'POST':
 		assignment = Assignment(
 				name = request.form['name'],
 				description = request.form['description'],
-				#comments = request.form['comments'], #This causes an HTTP 400 when a value wasn't submitted in the form (because of a KeyError on the MultiDict). How stupid!
+				#comment = request.form['comment'], #This causes an HTTP 400 when a value wasn't submitted in the form (because of a KeyError on the MultiDict). How stupid!
 				due_date = request.form['due_date'],
 				points = request.form['points'],
 				)
@@ -164,13 +164,14 @@ def assignment_update(assignment_pk):
 		query = 'UPDATE assignment SET name=:name, description=:description, due_date=date(:due_date), points=:points WHERE pk=:pk'
 		assignment.name = request.form['name']
 		assignment.description = request.form['description']
-		#assignment.comments = request.form['comments'] #Need to update the form to include this first, or else a 400 status code will occur
+		#assignment.comment = request.form['comment'] #Need to update the form to include this first, or else a 400 status code will occur
 		assignment.due_date = request.form['due_date']
 		assignment.points = request.form['points']
 		assignment.save()
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment.pk))
 
+#TODO: The POST part of this view is totally lame. It's slow, messy. Urgh.
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):
 
@@ -187,27 +188,38 @@ def assignment_grades_update(assignment_pk):
 		return render_template("assignment_grades_update.html",
 				assignment=assignment, students=students)
 	if request.method == 'POST':
-		student_pks_with_grades = g_by_student_pk.keys()
+		# Corral the form data
+		form_data = {}
+		ex = re.compile(r"^student_(?P<student_pk>\d+)_(?P<data_type>comment|points)$")
 		for key, value in request.form.iteritems():
-			student_pk = int(key[len("student_"):]) #Strips off "student_"
-			try:
-				points = int(value.strip())
-			except ValueError:
-				points = None
-				# TODO: Sanitize here. Message flash on error.
-				pass
-			if student_pk in student_pks_with_grades: #Grade exists, so update
+			res = ex.match(key)
+			if res is None:
+				continue
+			info = res.groupdict()
+			pk = int(info['student_pk'])
+			if not form_data.has_key(pk):
+				form_data[pk] = {}
+			if info['data_type'] == 'points':
+				try:
+					points = int(value)
+				except ValueError:
+					points = ""
+				form_data[pk]['points'] = points
+			if info['data_type'] == 'comment':
+				form_data[pk]['comment'] = value
+
+		for student_pk, info in form_data.iteritems():
+			if g_by_student_pk.has_key(student_pk):
 				grade = g_by_student_pk[student_pk]
-				if value.strip() == "":
-					grade.delete()
-				else:
-					grade.points = points
-					grade.save()
-			else: #grade does not already exist, so create it
-				if points:
-					grade = Grade(student_pk = student_pk,
-							assignment_pk=assignment.pk, points=points)
-					grade.save()
+				grade.points = info['points']
+				grade.comment = info['comment']
+				grade.save()
+			else:
+				grade = Grade(student_pk=student_pk,
+						assignment_pk=assignment.pk, 
+						points=info['points'],
+						comment=info['comment'])
+				grade.save()
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment_pk))
 
