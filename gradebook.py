@@ -173,54 +173,41 @@ def assignment_update(assignment_pk):
 
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):
+
+	assignment = Assignment.get(pk=assignment_pk)
+	students = Student.all()
+	grades = assignment.get_grades()
+	# We decorate the student's with their grades
+	student_pks = [s.pk for s in students]
+	g_by_student_pk = dict([(grade.student_pk, grade) for grade in grades])
+	for s in students:
+		s.grade = g_by_student_pk.get(s.pk)
+
 	if request.method == 'GET':
-		assignment_query = 'SELECT * from assignment WHERE pk=?'
-		assignment = query_db(assignment_query, [assignment_pk])[0]
-		students_grade_query = """
-			SELECT student.first_name, student.last_name, student.pk,
-				grade.points
-			FROM student LEFT JOIN grade 
-			ON grade.student_pk = student.pk AND grade.assignment_pk=? 
-			ORDER BY student.first_name, student.last_name, student.pk"""
-		students_grade = query_db(students_grade_query, [assignment_pk])
 		return render_template("assignment_grades_update.html",
-				assignment=assignment, students_grade=students_grade)
+				assignment=assignment, students=students)
 	if request.method == 'POST':
-		students_grades = {} # keys are student pks, values are grades
-		graded_students_query = """
-			SELECT student_pk 
-			FROM grade 
-			WHERE assignment_pk=?"""
-		graded_students = g.db.execute(graded_students_query, [assignment_pk])
-		graded_students = graded_students.fetchall()
-		graded_students = [row[0] for row in graded_students]
+		student_pks_with_grades = g_by_student_pk.keys()
 		for key, value in request.form.iteritems():
 			student_pk = int(key[len("student_"):]) #Strips off "student_"
-			if student_pk in graded_students:
-				if value == "":
-					g.db.execute("""
-						DELETE FROM grade
-						WHERE student_pk=? AND assignment_pk=?""",
-						[student_pk, assignment_pk])
-					g.db.commit()
+			try:
+				points = int(value.strip())
+			except ValueError:
+				points = None
+				# TODO: Sanitize here. Message flash on error.
+				pass
+			if student_pk in student_pks_with_grades: #Grade exists, so update
+				grade = g_by_student_pk[student_pk]
+				if value.strip() == "":
+					grade.delete()
 				else:
-					# TODO: Sanitize here. Message flash on error.
-					# TODO: This would be a good place to use executemany.
-					# Assuming that's more efficient.
-					points = int(value)
-					g.db.execute("""
-						UPDATE grade
-						SET points=? 
-						WHERE student_pk=? AND assignment_pk=?""",
-						[points, student_pk, assignment_pk])
+					grade.points = points
+					grade.save()
 			else: #grade does not already exist, so create it
-				points = int(value)
-				g.db.execute("""
-					INSERT INTO grade
-					(student_pk, assignment_pk, points)
-					VALUES (?, ?, ?)""",
-					[student_pk, assignment_pk, points])
-		g.db.commit()
+				if points:
+					grade = Grade(student_pk = student_pk,
+							assignment_pk=assignment.pk, points=points)
+					grade.save()
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment_pk))
 

@@ -10,7 +10,7 @@ insert into student values (
 	null, "Ghostly", "McQuin", "Spectre", 1765, "mcquinn@example.com");
 
 
-insert into assignment (name, description, comments, due_date, points) values (
+insert into assignment (name, description, comment, due_date, points) values (
 	"HW 1", "Do this", "The answer to part B should have been zebrageist", date('2010-09-13'), 10);
 insert into assignment (name, description, due_date, points) values (
 	"HW 2", "Do that", date('2010-10-15'), 10);
@@ -21,7 +21,7 @@ insert into assignment (name, description, due_date, points) values (
 -- Chris: 8, 9, 20
 insert into grade (points, student_pk, assignment_pk) values (8, 1, 1);
 insert into grade (points, student_pk, assignment_pk) values (9, 1, 2);
-insert into grade (points, comments, student_pk, assignment_pk) values (20, "Innovative work.", 1, 3);
+insert into grade (points, comment, student_pk, assignment_pk) values (20, "Innovative work.", 1, 3);
 -- Jamie: 8, 7, 19
 insert into grade (points, student_pk, assignment_pk) values (8, 2, 1);
 insert into grade (points, student_pk, assignment_pk) values (7, 2, 2);

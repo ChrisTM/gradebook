@@ -162,7 +162,7 @@ class Assignment(Model):
 		args = [self.pk]
 		cur = db.execute(query, args)
 		rows = cur.fetchall()
-		objs = [Assignment._from_row(row) for row in rows]
+		objs = [Grade._from_row(row) for row in rows]
 		return objs
 
 class Grade(Model):
@@ -171,6 +171,7 @@ class Grade(Model):
 
 	def __init__(self, pk=None, student_pk=None, assignment_pk=None,
 			points=None, comment=None):
+		super(Grade, self).__init__()
 		self.pk = pk
 		self.student_pk = student_pk
 		self.assignment_pk = assignment_pk
