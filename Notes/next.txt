@@ -1,6 +1,8 @@
+  - Just an idea: feasible to re-do the grades update to build the keys and check a the form dict vs using regex to parse? Probably.
   - Add assignment notes adding ability.
-  - Update templates for grade and assignment comments (CRUD and public view)
+  - Update templates for assignment comments (CRUD and public view)
   - Assignment/Student deletions don't cascade and cause grade deletions.
+  - An option to hide an assignment from the public gradebook would be great!
 
   - Add workflow to edit grades from a student's page.
   - Maybe change points -> grade in the grade table. 

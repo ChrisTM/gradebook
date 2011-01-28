@@ -54,14 +54,20 @@ def gradebook():
 
 @app.route('/public_gradebook/')
 def public_gradebook():
-	assignments = Assignment.all()
 	students = Student.all()
-	assignment_pks = [a.pk for a in assignments]
+	assignments = Assignment.all()
+	assignments_by_pk = dict([(a.pk, a) for a in assignments])
 	for student in students:
 		# Set the grades following the order specified by assignment_pks
 		grades = student.get_grades()
-		by_assignment_pk = dict([(g.assignment_pk, g) for g in grades])
-		student.grades = [by_assignment_pk.get(pk) for pk in assignment_pks]
+		grades_by_pk = dict([(g.assignment_pk, g) for g in grades])
+		grades = [grades_by_pk.get(pk) for pk in assignments_by_pk]
+		student.has_comments = False
+		for grade in grades:
+			if grade.comment:
+				student.has_comments = True
+			grade.assignment = assignments_by_pk[grade.assignment_pk]
+		student.grades = grades
 	return render_template("public_gradebook.html", assignments=assignments,
 			students=students)
 
