@@ -22,7 +22,7 @@ CREATE TABLE grade (
 	pk integer primary key,
 	student_pk integer NOT NULL,
 	assignment_pk integer NOT NULL,
-	points integer NOT NULL,
+	points integer,
 	comment text,
 	FOREIGN KEY(student_pk) REFERENCES student(pk),
 	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk)

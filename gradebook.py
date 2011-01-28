@@ -1,5 +1,4 @@
 import sqlite3
-import re
 from flask import Flask, g, url_for, redirect, render_template, request
 from model import Student, Assignment, Grade, db
 from operator import attrgetter
@@ -56,6 +55,8 @@ def gradebook():
 @app.route('/public_gradebook/')
 def public_gradebook():
 	students = Student.all()
+	# TODO: The below sort would be better accomplished by allowing the
+	# over-riding of sort in the Student.all() method.
 	students.sort(key=attrgetter('alias')) # We sort by the public field 'alias' to prevent leaking information about other fields.
 	assignments = Assignment.all()
 	assignments_by_pk = dict([(a.pk, a) for a in assignments])
@@ -182,7 +183,6 @@ def assignment_update(assignment_pk):
 #TODO: The POST part of this view is totally lame. It's slow, messy. Urgh.
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):
-
 	assignment = Assignment.get(pk=assignment_pk)
 	students = Student.all()
 	grades = assignment.get_grades()
@@ -196,38 +196,28 @@ def assignment_grades_update(assignment_pk):
 		return render_template("assignment_grades_update.html",
 				assignment=assignment, students=students)
 	if request.method == 'POST':
-		# Corral the form data
-		form_data = {}
-		ex = re.compile(r"^student_(?P<student_pk>\d+)_(?P<data_type>comment|points)$")
-		for key, value in request.form.iteritems():
-			res = ex.match(key)
-			if res is None:
-				continue
-			info = res.groupdict()
-			pk = int(info['student_pk'])
-			if not form_data.has_key(pk):
-				form_data[pk] = {}
-			if info['data_type'] == 'points':
-				try:
-					points = int(value)
-				except ValueError:
-					points = ""
-				form_data[pk]['points'] = points
-			if info['data_type'] == 'comment':
-				form_data[pk]['comment'] = value
-
-		for student_pk, info in form_data.iteritems():
-			if g_by_student_pk.has_key(student_pk):
-				grade = g_by_student_pk[student_pk]
-				grade.points = info['points']
-				grade.comment = info['comment']
-				grade.save()
-			else:
-				grade = Grade(student_pk=student_pk,
+		for student in students:
+			# These keys are first generated in the template as input tag
+			# name attributes.
+			points_key = "student_{0}_points".format(student.pk)
+			comment_key = "student_{0}_comment".format(student.pk)
+			points = request.form[points_key].strip()
+			comment = request.form[comment_key].strip()
+			try:
+				points = int(points.strip())
+			except ValueError:
+				points = None
+			comment = comment.strip()
+			
+			if student.grade is None:
+				student.grade = Grade(student_pk=student.pk,
 						assignment_pk=assignment.pk, 
-						points=info['points'],
-						comment=info['comment'])
-				grade.save()
+						points=points,
+						comment=comment)
+			else:
+				student.grade.points = points
+				student.grade.comment = comment
+			student.grade.save()
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment_pk))
 

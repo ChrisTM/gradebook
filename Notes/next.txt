@@ -1,4 +1,3 @@
-  - Just an idea: feasible to re-do the grades update to build the keys and check a the form dict vs using regex to parse? Probably.
   - Add assignment notes adding ability.
   - Update templates for assignment comments (CRUD and public view)
   - Assignment/Student deletions don't cascade and cause grade deletions.
