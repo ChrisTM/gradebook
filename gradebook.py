@@ -2,6 +2,7 @@ import sqlite3
 import re
 from flask import Flask, g, url_for, redirect, render_template, request
 from model import Student, Assignment, Grade, db
+from operator import attrgetter
 
 DEBUG = True
 SECRET_KEY = "'K\xaf\xd2\xc7\xc2#J\x05s%\x99J\x8e\xda\x85\xbe<t\xb2\xea\xab\xa7\xa4\xef'"
@@ -55,6 +56,7 @@ def gradebook():
 @app.route('/public_gradebook/')
 def public_gradebook():
 	students = Student.all()
+	students.sort(key=attrgetter('alias')) # We sort by the public field 'alias' to prevent leaking information about other fields.
 	assignments = Assignment.all()
 	assignments_by_pk = dict([(a.pk, a) for a in assignments])
 	for student in students:
