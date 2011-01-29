@@ -21,6 +21,8 @@ class Database(object):
 		"""Return a connection to the gradebook database"""
 		self.con = sqlite3.connect(self.database_name)
 		self.con.row_factory = sqlite3.Row
+		# By default, foreign_key constraints are not enforced. This is enabled especially for the cascading deletes for students and assignments.
+		self.con.execute("PRAGMA foreign_keys=ON")
 		return self.con
 
 	def execute(self, query, args=None, commit=True):

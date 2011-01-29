@@ -24,8 +24,8 @@ CREATE TABLE grade (
 	assignment_pk integer NOT NULL,
 	points integer,
 	comment text,
-	FOREIGN KEY(student_pk) REFERENCES student(pk),
-	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk)
+	FOREIGN KEY(student_pk) REFERENCES student(pk) ON DELETE CASCADE,
+	FOREIGN KEY(assignment_pk) REFERENCES assignment(pk) ON DELETE CASCADE,
 	UNIQUE (student_pk, assignment_pk) --It doesn't make sense to have more than one grade for the same assignment per person.
 );
 
