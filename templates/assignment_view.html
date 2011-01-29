@@ -23,6 +23,10 @@
 		<th>Points: </th>
 		<td>{{ assignment.points }}</td>
 	</tr>
+	<tr>
+		<th>Comment: </th>
+		<td>{{ assignment.comment|string|truncate(end='…') }}</td>
+	</tr>
 </table>
 
 <h2>Grades</h2>

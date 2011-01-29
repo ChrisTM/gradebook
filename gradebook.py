@@ -170,10 +170,9 @@ def assignment_update(assignment_pk):
 		return render_template('assignment_update.html',
 				assignment=assignment)
 	elif request.method == 'POST':
-		query = 'UPDATE assignment SET name=:name, description=:description, due_date=date(:due_date), points=:points WHERE pk=:pk'
 		assignment.name = request.form['name']
 		assignment.description = request.form['description']
-		#assignment.comment = request.form['comment'] #Need to update the form to include this first, or else a 400 status code will occur
+		assignment.comment = request.form['comment']
 		assignment.due_date = request.form['due_date']
 		assignment.points = request.form['points']
 		assignment.save()

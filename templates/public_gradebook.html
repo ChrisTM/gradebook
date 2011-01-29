@@ -9,6 +9,7 @@
 <body>
 	<h1>Class Grades</h1>
 	<h2>The Grades</h2>
+
 	<table>
 		<thead>
 			<tr>
@@ -28,6 +29,7 @@
 			{%- for student in students %}
 			{%- if student.alias %}
 			<tr>
+				{#- We use the loop index instead of the student's pk for privacy reasons. #}
 				<td><a title="Jump to this person’s comments..."{%- if student.has_comments %} href="#Student{{ loop.index }}"{%- endif %}>{{ student.alias }}</a></td>
 				{%- for grade in student.grades %}
 				<td>{{ grade.points }}</td>
@@ -38,25 +40,31 @@
 		</tbody>
 	</table>
 
+
+
 	<h2>The Comments</h2>
 	{%- for student in students %}
 	{%- if student.alias and student.has_comments %}
-	<h3 id="Student{{ loop.index }}">{{ student.alias }}</h3> {# We use the loop index instead of the student's pk for privacy reasons. #}
+
+	<h3 id="Student{{ loop.index }}">{{ student.alias }}</h3>
 		{%- for grade in student.grades %}
 		{%- if grade.comment %}
-		<h4>{{ grade.assignment.name }}</h4>
-		<p>{{ grade.comment }}</p>
-		{% endif %}
+	<h4>{{ grade.assignment.name }}</h4>
+	<p>{{ grade.comment }}</p>
+		{%- endif %}
 		{%- endfor %}
-	</tr>
 	{%- endif %}
 	{%- endfor %}
 
 
-	{#
+
 	<h2>Notes on the HW</h2>
-	<h3 id="HW2">HW 2</h3>
-	<p>Simply put, GET is a command that will <em>download</em> something from a server, while PUT will cause something to be <em>uploaded</em> to a server.</p>
-	#}
+	{%- for assignment in assignments %}
+	{%- if assignment.comment %}
+
+	<h3 id="HW{{ assignment.pk }}">{{ assignment.name }}</h3>
+	{{ assignment.comment | safe }}
+	{%- endif %}
+	{%- endfor %}
 </body>
 </html>
