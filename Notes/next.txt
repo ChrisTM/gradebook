@@ -1,3 +1,4 @@
+  - Aliases sorted with capitol letters first! That's not intuitive. Change to sort by letter only.
   - Add assignment notes adding ability.
   - Update templates for assignment comments (CRUD and public view)
   - Assignment/Student deletions don't cascade and cause grade deletions.

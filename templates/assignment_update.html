@@ -7,7 +7,7 @@
 	<p>Description: <input type="text" name="description" value="{{ assignment.description }}"></p>
 	<p>Due date: <input type="date" name="due_date" value="{{ assignment.due_date }}"></p>
 	<p>Points <input type="number" min="0" name="points" value="{{ assignment.points }}"></p>
-	<p>Comment: <textarea name="comment"></textarea></p>
+	<p>Comment: <textarea name="comment">{{ assignment.comment }}</textarea></p>
 	<p><input type="submit" name="update" value="Save"></p>
 </form>
 {% endblock %}
