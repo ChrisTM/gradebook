@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Update a Student{% endblock %}
+{% block title %}Student: {{ student.first_name }} {{ student.last_name }}{% endblock %}
 {% block content %}
 <h1>Student: {{ student.first_name }} {{ student.last_name }}</h1>
 <p><a href="{{ url_for('student_update', student_pk=student.pk) }}">Edit this student's info</a> or <a href="{{ url_for('student_delete', student_pk=student.pk) }}">delete this student.</a></p>

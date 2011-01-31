@@ -16,7 +16,7 @@
 		<tr>
 			<th>Alias</th>
 			{%- for assignment in assignments %}
-			<th><a title="See comments concerning this homework…" href="#HW{{ assignment.pk }}">{{ assignment.name }}</a></th>
+			<th><a title="See comments concerning this homework…"{%- if assignment.comment %} href="#HW{{ assignment.pk }}"{%- endif %}>{{ assignment.name }}</a></th>
 			{% endfor %}
 		</tr>
 	</thead>
