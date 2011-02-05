@@ -1,5 +1,5 @@
   - Aliases sorted with capitol letters first! That's not intuitive. Change to sort by letter only.
-  - Add assignment notes adding ability.
+  - When all grades don't exist for an assignment yet, the public gradebook freaks out with 'NoneType' object has no attribute 'comment'. Line 70 in gradebook.py. Look into catching KeyError from the MultiDicts.
   - Update templates for assignment comments (CRUD and public view)
   - Assignment/Student deletions don't cascade and cause grade deletions.
   - An option to hide an assignment from the public gradebook would be great!

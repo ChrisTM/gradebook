@@ -200,8 +200,15 @@ def assignment_grades_update(assignment_pk):
 			# name attributes.
 			points_key = "student_{0}_points".format(student.pk)
 			comment_key = "student_{0}_comment".format(student.pk)
-			points = request.form[points_key].strip()
-			comment = request.form[comment_key].strip()
+			try:
+				points = request.form[points_key].strip()
+				comment = request.form[comment_key].strip()
+			except KeyError:
+				# Maybe a student was added since the grade page was rendered.
+				# This will prevent a 400 from being thrown when we try to pull
+				# out information for a student that didn't exist when the form
+				# was created
+				continue
 			try:
 				points = int(points.strip())
 			except ValueError:
