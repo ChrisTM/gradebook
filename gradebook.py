@@ -54,10 +54,7 @@ def gradebook():
 
 @app.route('/public_gradebook/')
 def public_gradebook():
-	students = Student.all()
-	# TODO: The below sort would be better accomplished by allowing the
-	# over-riding of sort in the Student.all() method.
-	students.sort(key=attrgetter('alias')) # We sort by the public field 'alias' to prevent leaking information about other fields.
+	students = Student.all(order='alias')
 	assignments = Assignment.all()
 	assignments_by_pk = dict([(a.pk, a) for a in assignments])
 	for student in students:

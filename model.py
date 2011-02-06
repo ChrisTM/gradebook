@@ -66,10 +66,11 @@ class Model(object):
 		return obj
 
 	@classmethod
-	def all(cls):
-		if cls._default_order:
-			query = "SELECT * FROM {0} ORDER BY {1}".format(cls._table_name,
-					cls._default_order)
+	def all(cls, order=None):
+		order = order or cls._default_order
+		if order:
+			query = "SELECT * FROM {0} ORDER BY {1} COLLATE NOCASE"
+			query = query.format(cls._table_name, order)
 		else:
 			query = "SELECT * FROM {0}".format(cls._table_name)
 		cur = db.execute(query)
