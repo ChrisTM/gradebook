@@ -176,13 +176,14 @@ def assignment_update(assignment_pk):
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment.pk))
 
-#TODO: The POST part of this view is totally lame. It's slow, messy. Urgh.
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):
 	assignment = Assignment.get(pk=assignment_pk)
 	students = Student.all()
 	grades = assignment.get_grades()
-	# We decorate the student's with their grades
+	# We decorate the student's with their grades.
+	# Ideally, this would be done with a select_related type thing in the
+	# model. At the SQL level. TODO
 	student_pks = [s.pk for s in students]
 	g_by_student_pk = dict([(grade.student_pk, grade) for grade in grades])
 	for s in students:
@@ -191,6 +192,7 @@ def assignment_grades_update(assignment_pk):
 	if request.method == 'GET':
 		return render_template("assignment_grades_update.html",
 				assignment=assignment, students=students)
+	# TODO: This POSt method seems cumbersome. Can it be fixed?
 	if request.method == 'POST':
 		for student in students:
 			# These keys are first generated in the template as input tag
@@ -201,10 +203,9 @@ def assignment_grades_update(assignment_pk):
 				points = request.form[points_key].strip()
 				comment = request.form[comment_key].strip()
 			except KeyError:
-				# Maybe a student was added since the grade page was rendered.
-				# This will prevent a 400 from being thrown when we try to pull
-				# out information for a student that didn't exist when the form
-				# was created
+				# This will prevent a 400 status code from being returned if we
+				# try to get data from the form about a student that didn't
+				# exist when the form was created.
 				continue
 			try:
 				points = int(points.strip())

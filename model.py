@@ -25,7 +25,9 @@ class Database(object):
 		self.con.execute("PRAGMA foreign_keys=ON")
 		return self.con
 
-	def execute(self, query, args=None, commit=True):
+	# Commit can be false by default because of the implicit commits
+	# sqlite3 has, and because we commit on connection close
+	def execute(self, query, args=None, commit=False):
 		cur = self.con.cursor()
 		cur.execute(query, args or ())
 		if commit:
@@ -33,6 +35,7 @@ class Database(object):
 		return cur
 
 	def close(self):
+		self.con.commit()
 		self.con.close()
 
 db = Database(DATABASE)
