@@ -1,13 +1,9 @@
-  - When all grades don't exist for an assignment yet, the public gradebook freaks out with 'NoneType' object has no attribute 'comment'. Line 70 in gradebook.py. Look into catching KeyError from the MultiDicts.
-  - Update templates for assignment comments (CRUD and public view)
-  - Assignment/Student deletions don't cascade and cause grade deletions.
   - An option to hide an assignment from the public gradebook would be great!
   - Does not exist error pages when trying to access a nonexistent student or assignment. (Use 404s!)
   - Use Student.full_name. I think there's a bug too (using it in a template didn't work)
 
   - Add workflow to edit grades from a student's page.
   - Maybe change points -> grade in the grade table. 
-  - The ordering of student names is not consistent across pages.
   - Message flashing for things like user creation. (Message in base.html, probably)
   - DRY up the forms.
   - DRY up the CRUD
@@ -16,4 +12,3 @@
   - HTML labels on forms
   - CSSed forms http://www.cssdrive.com/index.php/examples/exampleitem/tableless_forms/
   - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
-  - Why was I using that query_db function that I adapted from the Flask docs? Shouldn't we be able to get an equivalent functionality from changing sqlite's row_factory to sqlite3.Row? If the problem is passing those objects between threads (does this problem exist, though?) it seems we can do dict(row) to remove the sqlite typing. But.... wait. That thread thing is only with connections and cursors, right? So that's a non-issue.

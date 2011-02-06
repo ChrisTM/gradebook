@@ -41,8 +41,8 @@ def index():
 
 @app.route('/gradebook/')
 def gradebook():
-	assignments = Assignment.all()
 	students = Student.all()
+	assignments = Assignment.all()
 	assignment_pks = [a.pk for a in assignments]
 	for student in students:
 		# Set the grades following the order specified by assignment_pks
@@ -60,13 +60,13 @@ def public_gradebook():
 	for student in students:
 		# Set the grades following the order specified by assignment_pks
 		grades = student.get_grades()
-		grades_by_pk = dict([(g.assignment_pk, g) for g in grades])
-		grades = [grades_by_pk.get(pk) for pk in assignments_by_pk]
-		student.has_comments = False
+		if not grades:
+			continue
+		grades_by_assignment_pk = dict([(g.assignment_pk, g) for g in grades])
+		grades = [grades_by_assignment_pk.get(a.pk) for a in assignments]
 		for grade in grades:
-			if grade.comment:
-				student.has_comments = True
 			grade.assignment = assignments_by_pk[grade.assignment_pk]
+		student.has_comments = any((grade.comment for grade in grades))
 		student.grades = grades
 	return render_template("public_gradebook.html", assignments=assignments,
 			students=students)
