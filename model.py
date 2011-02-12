@@ -137,7 +137,7 @@ class Assignment(Model):
 	_default_order = '-due_date, name, pk'
 
 	def __init__(self, pk=None, name=None, description=None, due_date=None,
-			points=None, comment=None):
+			points=None, comment=None, is_public=True):
 		super(Assignment, self).__init__()
 		self.pk = pk
 		self.name = name
@@ -145,21 +145,22 @@ class Assignment(Model):
 		self.due_date = due_date
 		self.points = points
 		self.comment = comment
+		self.is_public = is_public
 
 	def save(self):
 		# TODO: This could benefit from getting put into the model as much as
 		# possible.
 		if self._in_db:
 			query = """UPDATE assignment SET name=?, description=?,
-			due_date=?, points=?, comment=? WHERE pk=?"""
+			due_date=?, points=?, comment=?, is_public=? WHERE pk=?"""
 			args = [self.name, self.description, self.due_date, self.points,
-					self.comment, self.pk]
+					self.comment, self.is_public, self.pk]
 			db.execute(query, args)
 		else:
 			query = """INSERT INTO assignment (name, description, due_date,
-			points, comment) VALUES (?, ?, ?, ?, ?)"""
+			points, comment, is_public) VALUES (?, ?, ?, ?, ?, ?)"""
 			args = [self.name, self.description, self.due_date, self.points,
-					self.comment]
+					self.comment, self.is_public]
 			cur = db.execute(query, args)
 			self.pk = cur.lastrowid
 

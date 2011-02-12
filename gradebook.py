@@ -55,7 +55,7 @@ def gradebook():
 @app.route('/public_gradebook/')
 def public_gradebook():
 	students = Student.all(order='alias')
-	assignments = Assignment.all()
+	assignments = [a for a in Assignment.all() if a.is_public]
 	assignments_by_pk = dict([(a.pk, a) for a in assignments])
 	for student in students:
 		# Set the grades following the order specified by assignment_pks
@@ -140,6 +140,7 @@ def assignment_create():
 				#comment = request.form['comment'], #This causes an HTTP 400 when a value wasn't submitted in the form (because of a KeyError on the MultiDict). How stupid!
 				due_date = request.form['due_date'],
 				points = request.form['points'],
+				is_public = request.form.get('is_public', False, bool)
 				)
 		assignment.save()
 		if "create_and_add" in request.form:
@@ -172,6 +173,7 @@ def assignment_update(assignment_pk):
 		assignment.comment = request.form['comment']
 		assignment.due_date = request.form['due_date']
 		assignment.points = request.form['points']
+		assignment.is_public = request.form.get('is_public', False, bool)
 		assignment.save()
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment.pk))

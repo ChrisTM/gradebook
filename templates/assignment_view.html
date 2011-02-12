@@ -16,6 +16,10 @@
 		<td>{{ assignment.description }}</td>
 	</tr>
 	<tr>
+		<th>Public?: </th>
+		<td>{{ 'Yes' if assignment.is_public else 'No' }}</td>
+	</tr>
+	<tr>
 		<th>Due date: </th>
 		<td>{{ assignment.due_date }}</td>
 	</tr>

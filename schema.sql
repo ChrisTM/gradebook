@@ -15,7 +15,8 @@ CREATE TABLE assignment (
 	description text,
 	comment text,
 	due_date date,
-	points integer
+	points integer,
+	is_public boolean DEFAULT true
 );
 
 CREATE TABLE grade (
