@@ -35,6 +35,7 @@ def after_request(response):
 	return response
 
 
+
 @app.route('/')
 def index():
     return redirect(url_for("gradebook"), code=302)
@@ -72,10 +73,16 @@ def public_gradebook():
 			students=students)
 
 
+
 @app.route('/students/')
 def students():
 	students = Student.all()
 	return render_template('student_list.html', students=students)
+
+@app.route('/students/view/<int:student_pk>/')
+def student_view(student_pk):
+	student = Student.get(pk=student_pk)
+	return render_template("student_view.html", student=student)
 
 @app.route('/students/create/', methods=['GET', 'POST'])
 def student_create():
@@ -94,11 +101,6 @@ def student_create():
 			return render_template('student_create.html')
 		elif "create" in request.form:
 			return redirect(url_for('student_view', student_pk=student.pk))
-
-@app.route('/students/view/<int:student_pk>/')
-def student_view(student_pk):
-	student = Student.get(pk=student_pk)
-	return render_template("student_view.html", student=student)
 
 @app.route('/students/update/<int:student_pk>/', methods=['GET', 'POST'])
 def student_update(student_pk):
@@ -124,10 +126,23 @@ def student_delete(student_pk):
 		return redirect(url_for('students'))
 
 
+
 @app.route('/assignments/')
 def assignments():
 	assignments = Assignment.all()
 	return render_template('assignment_list.html', assignments=assignments)
+
+@app.route('/assignments/view/<int:assignment_pk>/')
+def assignment_view(assignment_pk):
+	assignment = Assignment.get(pk=assignment_pk)
+	students = Student.all()
+	grades = assignment.get_grades()
+	student_pks = [s.pk for s in students]
+	g_by_student_pk = dict([(g.student_pk, g) for g in grades])
+	for s in students:
+		s.grade = g_by_student_pk.get(s.pk)
+	return render_template('assignment_view.html', assignment=assignment,
+			students=students)
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
@@ -149,18 +164,6 @@ def assignment_create():
 			return redirect(url_for('assignment_view',
 				assignment_pk=assignment.pk))
 
-@app.route('/assignments/view/<int:assignment_pk>/')
-def assignment_view(assignment_pk):
-	assignment = Assignment.get(pk=assignment_pk)
-	students = Student.all()
-	grades = assignment.get_grades()
-	student_pks = [s.pk for s in students]
-	g_by_student_pk = dict([(g.student_pk, g) for g in grades])
-	for s in students:
-		s.grade = g_by_student_pk.get(s.pk)
-	return render_template('assignment_view.html', assignment=assignment,
-			students=students)
-
 @app.route('/assignments/update/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_update(assignment_pk):
 	assignment = Assignment.get(pk=assignment_pk)
@@ -177,6 +180,16 @@ def assignment_update(assignment_pk):
 		assignment.save()
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment.pk))
+
+@app.route('/assignments/delete/<int:assignment_pk>/', methods=['GET', 'POST'])
+def assignment_delete(assignment_pk):
+	assignment = Assignment.get(pk=assignment_pk)
+	if request.method == 'GET':
+		return render_template('assignment_delete.html',
+				assignment=assignment)
+	if request.method == 'POST':
+		assignment.delete()
+		return redirect(url_for('assignments'))
 
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):
@@ -227,15 +240,6 @@ def assignment_grades_update(assignment_pk):
 		return redirect(url_for('assignment_view',
 			assignment_pk=assignment_pk))
 
-@app.route('/assignments/delete/<int:assignment_pk>/', methods=['GET', 'POST'])
-def assignment_delete(assignment_pk):
-	assignment = Assignment.get(pk=assignment_pk)
-	if request.method == 'GET':
-		return render_template('assignment_delete.html',
-				assignment=assignment)
-	if request.method == 'POST':
-		assignment.delete()
-		return redirect(url_for('assignments'))
 
 
 if __name__ == '__main__':
