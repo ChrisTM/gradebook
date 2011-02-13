@@ -1,6 +1,7 @@
   - Does not exist error pages when trying to access a nonexistent student or assignment. (Use 404s!)
   - Use Student.full_name. I think there's a bug too (using it in a template didn't work)
   - Error page on publcic gradebook when assignment is newly created.
+  - Style & markup to right-justify gradebook numbers
 
   - Here is a query to get average grades:
 		SELECT student.pk, student.first_name, ROUND(AVG(grade.points),1) as avg_grade FROM student JOIN grade ON student.pk = grade.student_pk GROUP BY student.pk;
