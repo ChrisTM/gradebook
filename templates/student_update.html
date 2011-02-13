@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Update Student: {{ student.first_name }} {{ student.last_name }}{% endblock %}
+{% block title %}Update Student: {{ student.full_name }}{% endblock %}
 {% block content %}
-<h1>Update Student: {{ student.first_name }} {{ student.last_name }}</h1>
+<h1>Update Student: {{ student.full_name }}</h1>
 <p>Here you can update this students records. Or if you would like, you could <a href="{{ url_for('student_delete', student_pk=student.pk) }}">delete this student</a> instead.</p>
 <form action="{{ url_for('student_update', student_pk=student.pk) }}" method="post" accept-charset="utf-8">
 	<p><label>First name: <input type="text" name="first_name" value="{{ student.first_name }}" autofocus required></label></p>

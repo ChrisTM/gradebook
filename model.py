@@ -102,8 +102,12 @@ class Student(Model):
 		self.grad_year = grad_year
 		self.email = email
 
+	@property
 	def full_name(self):
-		return ' '.join([self.first_name, self.last_name])
+		full_name = ' '.join([self.first_name, self.last_name])
+		# We strip to remove trailing/leading space if last or first name is
+		# missing.
+		return full_name.strip()
 
 	def save(self):
 		# TODO: This could benefit from getting put into the model as much as
