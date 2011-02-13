@@ -43,20 +43,21 @@ db = Database(DATABASE)
 class Model(object):
 	_table_name = None
 	_default_order = None
+	_column_names = None
 
-	def __init__(self):
+	def __init__(self, **kwargs):
+		print kwargs
+		# TODO: validation for setting proper keys as per column defs
+		for column in self._column_names + ['pk']:
+			setattr(self, column, kwargs.get(column))
 		self._in_db = False
 
 	def __repr__(self):
 		return "<{0}: {1}>".format(self.__class__.__name__, self.pk)
 
 	@classmethod
-	def _from_row(cls, row_object):
-		# TODO:Maybe I should re-use this initialization method for regular
-		# kwarg initialization?
-		obj = cls()
-		for key in row_object.keys():
-			setattr(obj, key, row_object[key])
+	def _from_row(cls, row_dict):
+		obj = cls(**row_dict)
 		obj._in_db = True
 		return obj
 
@@ -91,16 +92,7 @@ class Model(object):
 class Student(Model):
 	_table_name = 'student'
 	_default_order = 'first_name, last_name, pk'
-
-	def __init__(self, pk=None, first_name=None, last_name=None, alias=None,
-			grad_year=None, email=None):
-		super(Student, self).__init__()
-		self.pk = pk
-		self.first_name = first_name
-		self.last_name = last_name
-		self.alias = alias
-		self.grad_year = grad_year
-		self.email = email
+	_column_names = ['first_name', 'last_name', 'alias', 'grad_year', 'email']
 
 	@property
 	def full_name(self):
@@ -139,21 +131,12 @@ class Student(Model):
 class Assignment(Model):
 	_table_name = 'assignment'
 	_default_order = '-due_date, name, pk'
-
-	def __init__(self, pk=None, name=None, description=None, due_date=None,
-			points=None, comment=None, is_public=True):
-		super(Assignment, self).__init__()
-		self.pk = pk
-		self.name = name
-		self.description = description
-		self.due_date = due_date
-		self.points = points
-		self.comment = comment
-		self.is_public = is_public
+	_column_names = ['name', 'description', 'comment', 'due_date', 'points', 'is_public']
 
 	def save(self):
 		# TODO: This could benefit from getting put into the model as much as
 		# possible.
+		print self.__dict__
 		if self._in_db:
 			query = """UPDATE assignment SET name=?, description=?,
 			due_date=?, points=?, comment=?, is_public=? WHERE pk=?"""
@@ -181,15 +164,7 @@ class Assignment(Model):
 class Grade(Model):
 	_table_name = 'grade'
 	_default_order = 'pk'
-
-	def __init__(self, pk=None, student_pk=None, assignment_pk=None,
-			points=None, comment=None):
-		super(Grade, self).__init__()
-		self.pk = pk
-		self.student_pk = student_pk
-		self.assignment_pk = assignment_pk
-		self.points = points
-		self.comment = comment
+	_column_names = ['student_pk', 'assignment_pk', 'points', 'comment']
 
 	def save(self):
 		# TODO: This could benefit from getting put into the model as much as
