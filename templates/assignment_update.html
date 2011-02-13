@@ -4,12 +4,12 @@
 <h1>Update Assignment: {{ assignment.name }}</h1>
 <p>You can also <a href="{{ url_for('assignment_grades_update', assignment_pk=assignment.pk) }}" title="Update the grades for {{ assignment.name }}">update the grades for this assignment</a> instead.</p>
 <form action="{{ url_for('assignment_update', assignment_pk=assignment.pk) }}" method="post" accept-charset="utf-8">
-	<p>Name: <input type="text" name="name" value="{{ assignment.name }}" required autofocus></p>
-	<p>Description: <input type="text" name="description" value="{{ assignment.description }}"></p>
-	<p>Make public?: <input type="checkbox" name="is_public" value="is_public"{{ ' checked' if assignment.is_public else '' }}></p>
-	<p>Due date: <input type="date" name="due_date" value="{{ assignment.due_date }}"></p>
-	<p>Points <input type="number" min="0" name="points" value="{{ assignment.points }}"></p>
-	<p>Comment: <textarea name="comment">{{ assignment.comment }}</textarea></p>
+	<p><label>Name: <input type="text" name="name" value="{{ assignment.name }}" required autofocus></label></p>
+	<p><label>Description: <input type="text" name="description" value="{{ assignment.description }}"></label></p>
+	<p><label>Make public?: <input type="checkbox" name="is_public" value="is_public"{{ ' checked' if assignment.is_public else '' }}></label></p>
+	<p><label>Due date: <input type="date" name="due_date" value="{{ assignment.due_date }}"></label></p>
+	<p><label>Points <input type="number" min="0" name="points" value="{{ assignment.points }}"></label></p>
+	<p><label>Comment: <textarea name="comment">{{ assignment.comment }}</textarea></label></p>
 	<p><input type="submit" name="update" value="Save"></p>
 </form>
 {% endblock %}

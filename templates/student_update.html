@@ -4,11 +4,11 @@
 <h1>Update Student: {{ student.first_name }} {{ student.last_name }}</h1>
 <p>Here you can update this students records. Or if you would like, you could <a href="{{ url_for('student_delete', student_pk=student.pk) }}">delete this student</a> instead.</p>
 <form action="{{ url_for('student_update', student_pk=student.pk) }}" method="post" accept-charset="utf-8">
-	<p>First name: <input type="text" name="first_name" value="{{ student.first_name }}" autofocus required></p>
-	<p>Last name: <input type="text" name="last_name" value="{{ student.last_name }}" required></p>
-	<p>Alias: <input type="text" name="alias" value="{{ student.alias }}"></p>
-	<p>Graduation Year: <input type="text" name="grad_year" value="{{ student.grad_year }}"></p>
-	<p>Email Address: <input type="email" name="email" value="{{ student.email }}"></p>
-	<p><input type="submit" name="update" value="Save">
+	<p><label>First name: <input type="text" name="first_name" value="{{ student.first_name }}" autofocus required></label></p>
+	<p><label>Last name: <input type="text" name="last_name" value="{{ student.last_name }}" required></label></p>
+	<p><label>Alias: <input type="text" name="alias" value="{{ student.alias }}"></label></p>
+	<p><label>Graduation Year: <input type="text" name="grad_year" value="{{ student.grad_year }}"></label></p>
+	<p><label>Email Address: <input type="email" name="email" value="{{ student.email }}"></label></p>
+	<p><input type="submit" name="update" value="Save"></p>
 </form>
 {% endblock %}
