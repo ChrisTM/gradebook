@@ -1,7 +1,9 @@
 import sqlite3
 from contextlib import closing
+import logging
 
 DATABASE = "./gradebook.db"
+logging.basicConfig(level=logging.DEBUG)
 
 class Database(object):
 	def __init__(self, database_name):
@@ -30,6 +32,7 @@ class Database(object):
 	def execute(self, query, args=None, commit=False):
 		cur = self.con.cursor()
 		cur.execute(query, args or ())
+		logging.debug(str(query) + "; " + str(args))
 		if commit:
 			self.con.commit()
 		return cur
@@ -46,7 +49,6 @@ class Model(object):
 	_column_names = None
 
 	def __init__(self, **kwargs):
-		print kwargs
 		# TODO: validation for setting proper keys as per column defs
 		for column in self._column_names + ['pk']:
 			setattr(self, column, kwargs.get(column))
@@ -63,11 +65,25 @@ class Model(object):
 
 	@classmethod
 	def get(cls, pk=None):
-		query = "SELECT * FROM {0} WHERE pk=?".format(cls._table_name)
+		query = "SELECT * FROM {0} WHERE pk=? LIMIT 1".format(cls._table_name)
 		cur = db.execute(query, (pk, ))
 		row = cur.fetchone()
 		obj = cls._from_row(row)
 		return obj
+
+	@classmethod
+	def where(cls, **kwargs):
+		# TODO kwarg validation by checking _column_names
+		items = kwargs.items()
+		columns = [i[0] for i in items]
+		values = [i[1] for i in items]
+		conditions = '=? and '.join(columns) + '=?'
+		query = "SELECT * FROM {0} WHERE {1}".format(cls._table_name,
+				conditions)
+		cur = db.execute(query, values)
+		rows = cur.fetchall()
+		objs = [cls._from_row(row) for row in rows]
+		return objs
 
 	@classmethod
 	def all(cls, order=None):
@@ -119,14 +135,7 @@ class Student(Model):
 			self.pk = cur.lastrowid
 
 	def get_grades(self):
-		# TODO: Genericize get to accept kwargs and use that here:
-		# return Grade.get(assignment_pk=self.pk)
-		query = """SELECT * FROM grade WHERE student_pk=?"""
-		args = [self.pk]
-		cur = db.execute(query, args)
-		rows = cur.fetchall()
-		objs = [Grade._from_row(row) for row in rows]
-		return objs
+		return Grade.where(student_pk=self.pk)
 
 class Assignment(Model):
 	_table_name = 'assignment'
@@ -136,7 +145,6 @@ class Assignment(Model):
 	def save(self):
 		# TODO: This could benefit from getting put into the model as much as
 		# possible.
-		print self.__dict__
 		if self._in_db:
 			query = """UPDATE assignment SET name=?, description=?,
 			due_date=?, points=?, comment=?, is_public=? WHERE pk=?"""
@@ -152,14 +160,7 @@ class Assignment(Model):
 			self.pk = cur.lastrowid
 
 	def get_grades(self):
-		# TODO: Genericize get to accept kwargs and use that here:
-		# return Grade.get(assignment_pk=self.pk)
-		query = """SELECT * FROM grade WHERE assignment_pk=?"""
-		args = [self.pk]
-		cur = db.execute(query, args)
-		rows = cur.fetchall()
-		objs = [Grade._from_row(row) for row in rows]
-		return objs
+		return Grade.where(assignment_pk=self.pk)
 
 class Grade(Model):
 	_table_name = 'grade'
