@@ -2,6 +2,7 @@
   - Error page on public gradebook when assignment is newly created.
   - Add workflow to edit grades from a student's page.
   - Ensure i'm using request.form.get() where appropriate (might be missing some opportunities!)
+  - A checkbox to mark grade or assignment comments as being plain text (so we escape it) or as html (for straight pass-through)?
   - Style & markup to right-justify gradebook numbers
   - Maybe change points -> grade in the grade table. 
   - Message flashing for things like user creation. (Message in base.html, probably)
