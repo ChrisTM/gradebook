@@ -4,20 +4,20 @@
 <head>
 	<title>Grades for CS 107 (Fall 2010)</title>
 	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" /> 
-	<link rel="stylesheet" href="/static/public_gradebook.css" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='public_gradebook.css') }}" type="text/css" />
 </head>
 <body>
 <h1>Class Grades</h1>
 
 <h2>The Grades</h2>
-
+<p>These grades were last updated {{now.year}}-{{now.month}}-{{now.day}} around {{ now.strftime("%l%p") }}.</p>
 <table>
 	<thead>
 		<tr>
 			<th>Alias</th>
 			{%- for assignment in assignments %}
 			<th><a title="See comments concerning this homework…"{%- if assignment.comment %} href="#HW{{ assignment.pk }}"{%- endif %}>{{ assignment.name }}</a></th>
-			{% endfor %}
+			{%- endfor %}
 		</tr>
 	</thead>
 	<tbody>

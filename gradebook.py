@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, g, url_for, redirect, render_template, request
 from model import Student, Assignment, Grade, db
 from operator import attrgetter
+from datetime import datetime
 
 DEBUG = True
 SECRET_KEY = "'K\xaf\xd2\xc7\xc2#J\x05s%\x99J\x8e\xda\x85\xbe<t\xb2\xea\xab\xa7\xa4\xef'"
@@ -69,8 +70,9 @@ def public_gradebook():
 			grade.assignment = assignments_by_pk[grade.assignment_pk]
 		student.has_comments = any((grade.comment for grade in grades))
 		student.grades = grades
+	now = datetime.now()
 	return render_template("public_gradebook.html", assignments=assignments,
-			students=students)
+			students=students, now=now)
 
 
 
