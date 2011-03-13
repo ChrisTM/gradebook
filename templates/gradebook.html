@@ -16,14 +16,14 @@
 		<tr>
 			<td><em>Best Possible</em></td>
 			{%- for assignment in assignments %}
-			<td><em>{{ assignment.points }}</em></td>
+			<td class="points"><em>{{ assignment.points }}</em></td>
 			{%- endfor %}
 		</tr>
 		{%- for student in students %}
 		<tr>
 			<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
 			{%- for grade in student.grades %}
-			<td>{{ grade.points }}</td>
+			<td class="points">{{ grade.points }}</td>
 			{%- endfor %}
 		</tr>
 		{%- endfor %}

@@ -18,7 +18,7 @@
 		<tr>
 			<td><a href="{{ url_for('assignment_view', assignment_pk=assignment.pk) }}">{{ assignment.name }}</a></td>
 			<td>{{ 'Yes' if assignment.is_public else 'No' }}</td>
-			<td>{{ assignment.points }}</td>
+			<td class="points">{{ assignment.points }}</td>
 			<td>{{ assignment.due_date }}</td>
 			<td>{{ assignment.description }}</a></td>
 		</tr>

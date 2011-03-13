@@ -15,7 +15,7 @@
 			{%- for student in students %}
 			<tr>
 				<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
-				<td><input type="text" name="student_{{ student.pk }}_points" value="{{ student.grade.points }}"></td>
+				<td><input class="points" type="text" name="student_{{ student.pk }}_points" value="{{ student.grade.points }}"></td>
 				<td><textarea name="student_{{ student.pk }}_comment">{{ student.grade.comment }}</textarea>
 			</tr>
 			{%- endfor %}

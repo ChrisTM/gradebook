@@ -12,3 +12,14 @@ th, td {
 thead th {
 	padding: 0.5em 0.5em;
 }
+
+.points {
+	text-align: right;
+}
+input.points {
+	width: 4em;
+}
+textarea {
+	width: 30em;
+	height: 4em;
+}

@@ -1,7 +1,6 @@
 * {
 	margin: 0;
 	padding: 0;
-	font-weight: normal;
 	}
 
 body {
@@ -13,28 +12,21 @@ body {
 	max-width: 40em;
 	}
 
-
 a:link { color: #00C; }
 a:visited {	color: #306; }
 
-
+h1, h2, h3, h4, h5, h6 { font-weight: normal }
+h1 + h2 { margin-top: 0; }
 h1 {
 	font-size: 2.5em;
 	margin: 1em 0;
 	text-align: center;
 	}
-h1 + h2 { 
-	margin-top: 0; 
-	}
 h2 {
 	font-size: 2.25em;
-	margin: 1.5em -1.33em 0.4em -1.33em;
+	margin: 1.5em -1.33em 0.4em;
 	padding: 0.4em 1.33em;
 	background-color: #999;
-	/*
-	display: inline-block;
-	padding: 0.4em 1.33em 0.4em 1.33em;
-	*/
 	}
 h3 {
 	font-size: 1.75em;
@@ -44,6 +36,7 @@ h3 {
 h4 {
 	font-size: 1em;
 	margin-top: 0.5em;
+	margin-bottom: 0em;
 	font-weight: bold;
 	}
 
@@ -51,38 +44,38 @@ h4 {
 h4 + p {
 	margin-top: 0;
 	}
-p, pre {
+p, table {
 	margin-top: 0.5em;
 	margin-bottom: 1em;
 	}
+ol, ul, pre {
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+	margin-left: 3em;
+	}
 pre {
+	font-family: monospace;
 	line-height: 1.5em;
-	margin-left: 2em;
-	}
-p + ol, p + ul {
-	margin-top: -1em;
-	}
-ol, ul {
-	margin-left: 2.75em;
 	}
 abbr {
 	border-bottom: 1px dotted #333;
 	}
 
 
-table {
+#gradebook {
 	border-collapse: collapse;
 	margin-right: -10em;
 	}
 th, td {
 	padding: 0.25em 0.5em;
 	}
-td + td {
+#gradebook td + td {
 	text-align: right;
 	}
-th {
+#gradebook th {
 	border-bottom: 3px solid #444;
+	font-weight: normal;
 	}
-td {
+#gradebook td {
 	border-bottom: 1px solid #777;
 	}
