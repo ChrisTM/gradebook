@@ -14,4 +14,4 @@
   - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
 
   - Here is a query to get average grades:
-		SELECT student.pk, student.first_name, ROUND(AVG(grade.points),1) as avg_grade FROM student JOIN grade ON student.pk = grade.student_pk GROUP BY student.pk;
+        SELECT student.pk, student.first_name, ROUND(AVG(grade.points),1) as avg_grade FROM student JOIN grade ON student.pk = grade.student_pk GROUP BY student.pk;

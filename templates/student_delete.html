@@ -3,7 +3,7 @@
 {% block content %}
 <h1>Delete Student: {{ student.full_name }}</h1>
 <form action="{{ url_for('student_delete', student_pk=student.pk) }}" method="post" accept-charset="utf-8">
-	<p>Do you really want to delete the student {{ student.full_name }}, and all associated grades?</p>
-	<p><input type="submit" value="Yes (Delete)"> <a href="{{ url_for('student_view', student_pk=student.pk) }}">No, take me back to this student’s page.</a></p>
+    <p>Do you really want to delete the student {{ student.full_name }}, and all associated grades?</p>
+    <p><input type="submit" value="Yes (Delete)"> <a href="{{ url_for('student_view', student_pk=student.pk) }}">No, take me back to this student’s page.</a></p>
 </form>
 {% endblock %}

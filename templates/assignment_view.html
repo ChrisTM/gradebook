@@ -7,50 +7,50 @@
 <h2>Assignment Info</h2>
 <p><a href="{{ url_for('assignment_update', assignment_pk=assignment.pk) }}">Edit this info.</a></p>
 <table>
-	<tr>
-		<th>Name: </th>
-		<td>{{ assignment.name }}</td>
-	</tr>
-	<tr>
-		<th>Description: </th>
-		<td>{{ assignment.description }}</td>
-	</tr>
-	<tr>
-		<th>Public?: </th>
-		<td>{{ 'Yes' if assignment.is_public else 'No' }}</td>
-	</tr>
-	<tr>
-		<th>Due date: </th>
-		<td>{{ assignment.due_date }}</td>
-	</tr>
-	<tr>
-		<th>Points: </th>
-		<td>{{ assignment.points }}</td>
-	</tr>
-	<tr>
-		<th>Comment: </th>
-		<td>{{ assignment.comment|string|truncate(end='…') }}</td>
-	</tr>
+    <tr>
+        <th>Name: </th>
+        <td>{{ assignment.name }}</td>
+    </tr>
+    <tr>
+        <th>Description: </th>
+        <td>{{ assignment.description }}</td>
+    </tr>
+    <tr>
+        <th>Public?: </th>
+        <td>{{ 'Yes' if assignment.is_public else 'No' }}</td>
+    </tr>
+    <tr>
+        <th>Due date: </th>
+        <td>{{ assignment.due_date }}</td>
+    </tr>
+    <tr>
+        <th>Points: </th>
+        <td>{{ assignment.points }}</td>
+    </tr>
+    <tr>
+        <th>Comment: </th>
+        <td>{{ assignment.comment|string|truncate(end='…') }}</td>
+    </tr>
 </table>
 
 <h2>Grades</h2>
 <p><a href="{{ url_for('assignment_grades_update', assignment_pk=assignment.pk) }}">Edit this info.</a></p>
 <table>
-	<thead>
-		<tr>
-			<th>Student</th>
-			<th>Points</th>
-			<th>Comment</th>
-		</tr>
-	</thead>
-	<tbody>
-		{%- for student in students %}
-		<tr>
-			<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
-			<td>{{ student.grade.points }}</td>
-			<td>{{ student.grade.comment }}</td>
-		</tr>
-		{%- endfor %}
-	</tbody>
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Points</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%- for student in students %}
+        <tr>
+            <td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
+            <td>{{ student.grade.points }}</td>
+            <td>{{ student.grade.comment }}</td>
+        </tr>
+        {%- endfor %}
+    </tbody>
 </table>
 {% endblock %}

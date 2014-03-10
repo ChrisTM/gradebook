@@ -1,20 +1,20 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<title>{% block title %}{% endblock%} ― SimpleGradebook</title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>{% block title %}{% endblock%} ― SimpleGradebook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 
 <body>
 <nav>
-	<ul>
-		<li><a href="{{ url_for('gradebook') }}">Gradebook</a></li>
-		<li><a href="{{ url_for('public_gradebook') }}">Public Gradebook</a></li>
-		<li><a href="{{ url_for('assignments') }}">Assignments</a></li>
-		<li><a href="{{ url_for('students') }}">Students</a></li>
-	</ul>
+    <ul>
+        <li><a href="{{ url_for('gradebook') }}">Gradebook</a></li>
+        <li><a href="{{ url_for('public_gradebook') }}">Public Gradebook</a></li>
+        <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+        <li><a href="{{ url_for('students') }}">Students</a></li>
+    </ul>
 </nav>
 
 <div id="content">

@@ -4,29 +4,29 @@
 <h1>The Gradebook</h1>
 <p>This is your private gradebook view. The <a href="{{ url_for('public_gradebook') }}" title="The public gradebook page">public gradebook</a> is an anonymized single-page gradebook which is suitable for public distribution to your class.<p>
 <table>
-	<thead>
-		<tr>
-			<th>Student</th>
-			{%- for assignment in assignments %}
-			<th><a href="{{ url_for('assignment_view', assignment_pk=assignment.pk) }}">{{ assignment.name }}</a></th>
-			{%- endfor %}
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><em>Best Possible</em></td>
-			{%- for assignment in assignments %}
-			<td class="points"><em>{{ assignment.points }}</em></td>
-			{%- endfor %}
-		</tr>
-		{%- for student in students %}
-		<tr>
-			<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
-			{%- for grade in student.grades %}
-			<td class="points">{{ grade.points }}</td>
-			{%- endfor %}
-		</tr>
-		{%- endfor %}
-	</tbody>
+    <thead>
+        <tr>
+            <th>Student</th>
+            {%- for assignment in assignments %}
+            <th><a href="{{ url_for('assignment_view', assignment_pk=assignment.pk) }}">{{ assignment.name }}</a></th>
+            {%- endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><em>Best Possible</em></td>
+            {%- for assignment in assignments %}
+            <td class="points"><em>{{ assignment.points }}</em></td>
+            {%- endfor %}
+        </tr>
+        {%- for student in students %}
+        <tr>
+            <td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
+            {%- for grade in student.grades %}
+            <td class="points">{{ grade.points }}</td>
+            {%- endfor %}
+        </tr>
+        {%- endfor %}
+    </tbody>
 </table>
 {% endblock %}

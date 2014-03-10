@@ -3,14 +3,14 @@
 {% block content %}
 <h1>Create an Assignment</h1>
 <form action="{{ url_for('assignment_create') }}" method="post" accept-charset="utf-8">
-	<p><label>Name: <input type="text" name="name" value="" required autofocus></label></p>
-	<p><label>Description: <input type="text" name="description" value=""></label></p>
-	<p><label>Make public?: <input type="checkbox" name="is_public" value="is_public" checked></label></p>
-	<p><label>Due date: <input type="date" name="due_date" value=""></label></p>
-	<p><label>Points <input type="number" min="0" name="points" value=""></label></p>
-	<p>
-		<input type="submit" name="create" value="Create assignment">
-		<input type="submit" name="create_and_add" value="Create assignment and add another…">
-	</p>
+    <p><label>Name: <input type="text" name="name" value="" required autofocus></label></p>
+    <p><label>Description: <input type="text" name="description" value=""></label></p>
+    <p><label>Make public?: <input type="checkbox" name="is_public" value="is_public" checked></label></p>
+    <p><label>Due date: <input type="date" name="due_date" value=""></label></p>
+    <p><label>Points <input type="number" min="0" name="points" value=""></label></p>
+    <p>
+        <input type="submit" name="create" value="Create assignment">
+        <input type="submit" name="create_and_add" value="Create assignment and add another…">
+    </p>
 </form>
 {% endblock %}

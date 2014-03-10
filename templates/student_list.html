@@ -4,23 +4,23 @@
 <h1>Student List</h1>
 <p><a href="{{ url_for('student_create') }}">Create a new student</a></p>
 <table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Alias</th>
-			<th>Graduation Year</th>
-			<th>Email Address</th>
-		</tr>
-	</thead>
-	<tbody>
-		{%- for student in students %}
-		<tr>
-			<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
-			<td>{{ student.alias }}</td>
-			<td>{{ student.grad_year }}</td>
-			<td><a href="mailto:{{ student.email }}">{{ student.email }}</a></td>
-		</tr>
-		{%- endfor %}
-	</tbody>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Alias</th>
+            <th>Graduation Year</th>
+            <th>Email Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%- for student in students %}
+        <tr>
+            <td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
+            <td>{{ student.alias }}</td>
+            <td>{{ student.grad_year }}</td>
+            <td><a href="mailto:{{ student.email }}">{{ student.email }}</a></td>
+        </tr>
+        {%- endfor %}
+    </tbody>
 </table>
 {% endblock %}

@@ -3,14 +3,14 @@
 {% block content %}
 <h1>Create a Student</h1>
 <form action="{{ url_for('student_create') }}" method="post" accept-charset="utf-8">
-	<p><label>First name: <input type="text" name="first_name" value="" autofocus required></label></p>
-	<p><label>Last name: <input type="text" name="last_name" value="" required></label></p>
-	<p><label>Alias: <input type="text" name="alias" value=""></label></p>
-	<p><label>Graduation Year: <input type="text" name="grad_year" value=""></label></p>
-	<p><label>Email Address: <input type="email" name="email" value=""></label></p>
-	<p>
-		<input type="submit" name="create" value="Create student">
-		<input type="submit" name="create_and_add" value="Create student and add another…">
-	</p>
+    <p><label>First name: <input type="text" name="first_name" value="" autofocus required></label></p>
+    <p><label>Last name: <input type="text" name="last_name" value="" required></label></p>
+    <p><label>Alias: <input type="text" name="alias" value=""></label></p>
+    <p><label>Graduation Year: <input type="text" name="grad_year" value=""></label></p>
+    <p><label>Email Address: <input type="email" name="email" value=""></label></p>
+    <p>
+        <input type="submit" name="create" value="Create student">
+        <input type="submit" name="create_and_add" value="Create student and add another…">
+    </p>
 </form>
 {% endblock %}

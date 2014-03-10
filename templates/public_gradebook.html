@@ -2,9 +2,9 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Grades for CS 107 (Fall 2010)</title>
-	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" /> 
-	<link rel="stylesheet" href="{{ url_for('static', filename='public_gradebook.css') }}" type="text/css" />
+    <title>Grades for CS 107 (Fall 2010)</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" /> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='public_gradebook.css') }}" type="text/css" />
 </head>
 <body>
 <h1>Class Grades</h1>
@@ -12,33 +12,33 @@
 <h2>The Grades</h2>
 <p>These grades were last updated {{now.year}}-{{now.month}}-{{now.day}} around {{ now.strftime("%l%p") }}.</p>
 <table id="gradebook">
-	<thead>
-		<tr>
-			<th>Alias</th>
-			{%- for assignment in assignments %}
-			<th><a title="See comments concerning this homework…"{%- if assignment.comment %} href="#HW{{ assignment.pk }}"{%- endif %}>{{ assignment.name }}</a></th>
-			{%- endfor %}
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td><em>Best Possible</em></td>
-			{%- for assignment in assignments %}
-			<td><em>{{ assignment.points }}</em></td>
-			{%- endfor %}
-		</tr>
-		{%- for student in students %}
-		{%- if student.alias %}
-		<tr>
-			{#- We use the loop index instead of the student's pk for privacy reasons. #}
-			<td><a title="Jump to this person’s comments…"{%- if student.has_comments %} href="#Student{{ loop.index }}"{%- endif %}>{{ student.alias }}</a></td>
-			{%- for grade in student.grades %}
-			<td>{{ grade.points }}</td>
-			{%- endfor %}
-		</tr>
-		{%- endif %}
-		{%- endfor %}
-	</tbody>
+    <thead>
+        <tr>
+            <th>Alias</th>
+            {%- for assignment in assignments %}
+            <th><a title="See comments concerning this homework…"{%- if assignment.comment %} href="#HW{{ assignment.pk }}"{%- endif %}>{{ assignment.name }}</a></th>
+            {%- endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><em>Best Possible</em></td>
+            {%- for assignment in assignments %}
+            <td><em>{{ assignment.points }}</em></td>
+            {%- endfor %}
+        </tr>
+        {%- for student in students %}
+        {%- if student.alias %}
+        <tr>
+            {#- We use the loop index instead of the student's pk for privacy reasons. #}
+            <td><a title="Jump to this person’s comments…"{%- if student.has_comments %} href="#Student{{ loop.index }}"{%- endif %}>{{ student.alias }}</a></td>
+            {%- for grade in student.grades %}
+            <td>{{ grade.points }}</td>
+            {%- endfor %}
+        </tr>
+        {%- endif %}
+        {%- endfor %}
+    </tbody>
 </table>
 
 
@@ -48,12 +48,12 @@
 {%- if student.alias and student.has_comments %}
 
 <h3 id="Student{{ loop.index }}">{{ student.alias }}</h3>
-	{%- for grade in student.grades %}
-	{%- if grade.comment %}
+    {%- for grade in student.grades %}
+    {%- if grade.comment %}
 <h4>{{ grade.assignment.name }}</h4>
 <p>{{ grade.comment }}</p>
-	{%- endif %}
-	{%- endfor %}
+    {%- endif %}
+    {%- endfor %}
 {%- endif %}
 {%- endfor %}
 

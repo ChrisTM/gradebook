@@ -3,24 +3,24 @@
 {% block content %}
 <h1>Update Grades for {{ assignment.name }}</h1>
 <form action="{{ url_for('assignment_grades_update', assignment_pk=assignment.pk) }}" method="post" accept-charset="utf-8">
-	<table>
-		<thead>
-			<tr>
-				<th>Student</th>
-				<th>Points</th>
-				<th>Comment</th>
-			</tr>
-		</thead>
-		<tbody>
-			{%- for student in students %}
-			<tr>
-				<td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
-				<td><input class="points" type="text" name="student_{{ student.pk }}_points" value="{{ student.grade.points }}"></td>
-				<td><textarea name="student_{{ student.pk }}_comment">{{ student.grade.comment }}</textarea>
-			</tr>
-			{%- endfor %}
-		</tbody>
-	</table>
-	<p><input type="submit" value="Save grades"></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Points</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%- for student in students %}
+            <tr>
+                <td><a href="{{ url_for('student_view', student_pk=student.pk) }}">{{ student.full_name }}</a></td>
+                <td><input class="points" type="text" name="student_{{ student.pk }}_points" value="{{ student.grade.points }}"></td>
+                <td><textarea name="student_{{ student.pk }}_comment">{{ student.grade.comment }}</textarea>
+            </tr>
+            {%- endfor %}
+        </tbody>
+    </table>
+    <p><input type="submit" value="Save grades"></p>
 </form>
 {% endblock %}

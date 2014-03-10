@@ -4,25 +4,25 @@
 <h1>Assignment List</h1>
 <p><a href="{{ url_for('assignment_create') }}">Create a new assignment</a></p>
 <table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Public?</th>
-			<th>Points</th>
-			<th>Due Date</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		{%- for assignment in assignments %}
-		<tr>
-			<td><a href="{{ url_for('assignment_view', assignment_pk=assignment.pk) }}">{{ assignment.name }}</a></td>
-			<td>{{ 'Yes' if assignment.is_public else 'No' }}</td>
-			<td class="points">{{ assignment.points }}</td>
-			<td>{{ assignment.due_date }}</td>
-			<td>{{ assignment.description }}</a></td>
-		</tr>
-		{%- endfor %}
-	</tbody>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Public?</th>
+            <th>Points</th>
+            <th>Due Date</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%- for assignment in assignments %}
+        <tr>
+            <td><a href="{{ url_for('assignment_view', assignment_pk=assignment.pk) }}">{{ assignment.name }}</a></td>
+            <td>{{ 'Yes' if assignment.is_public else 'No' }}</td>
+            <td class="points">{{ assignment.points }}</td>
+            <td>{{ assignment.due_date }}</td>
+            <td>{{ assignment.description }}</a></td>
+        </tr>
+        {%- endfor %}
+    </tbody>
 </table>
 {% endblock %}

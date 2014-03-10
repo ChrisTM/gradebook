@@ -1,21 +1,21 @@
 BEGIN;
 
 insert into student values (
-	null, "Christopher", "Mitchell", "goose", 2012, "chrism@lclark.edu");
+    null, "Christopher", "Mitchell", "goose", 2012, "chrism@lclark.edu");
 insert into student values (
-	null, "Jamie", "Curtis", "rooster", 2012, null);
+    null, "Jamie", "Curtis", "rooster", 2012, null);
 insert into student values (
-	null, "Devin", "Owen", "bookclub", 2014, "devin@example.com");
+    null, "Devin", "Owen", "bookclub", 2014, "devin@example.com");
 insert into student values (
-	null, "Ghostly", "McQuin", "Spectre", 1765, "mcquinn@example.com");
+    null, "Ghostly", "McQuin", "Spectre", 1765, "mcquinn@example.com");
 
 
 insert into assignment (name, description, comment, due_date, points) values (
-	"HW 1", "Do this", "The answer to part B should have been zebrageist", date('2010-09-13'), 10);
+    "HW 1", "Do this", "The answer to part B should have been zebrageist", date('2010-09-13'), 10);
 insert into assignment (name, description, due_date, points) values (
-	"HW 2", "Do that", date('2010-10-15'), 10);
+    "HW 2", "Do that", date('2010-10-15'), 10);
 insert into assignment (name, description, due_date, points) values (
-	"HW 3", "Do something else", date('2010-10-25'), 20);
+    "HW 3", "Do something else", date('2010-10-25'), 20);
 
 
 -- Chris: 8, 9, 20
