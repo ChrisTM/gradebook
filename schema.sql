@@ -2,10 +2,10 @@ BEGIN;
 
 CREATE TABLE student (
     pk integer primary key,
-    first_name text NOT NULL, 
-    last_name text, 
+    first_name text NOT NULL,
+    last_name text,
     alias text,
-    grad_year integer, 
+    grad_year integer,
     email text
 );
 

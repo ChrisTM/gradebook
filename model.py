@@ -5,6 +5,7 @@ import logging
 DATABASE = "./gradebook.db"
 logging.basicConfig(level=logging.DEBUG)
 
+
 class Database(object):
     def __init__(self, database_name):
         """Create an Database object associated with sqlite3 file
@@ -42,6 +43,7 @@ class Database(object):
         self.con.close()
 
 db = Database(DATABASE)
+
 
 class Model(object):
     _table_name = None
@@ -105,6 +107,7 @@ class Model(object):
             args = (self.pk, )
             db.execute(query, args)
 
+
 class Student(Model):
     _table_name = 'student'
     _default_order = 'first_name, last_name, pk'
@@ -137,6 +140,7 @@ class Student(Model):
     def get_grades(self):
         return Grade.where(student_pk=self.pk)
 
+
 class Assignment(Model):
     _table_name = 'assignment'
     _default_order = '-due_date, name, pk'
@@ -161,6 +165,7 @@ class Assignment(Model):
 
     def get_grades(self):
         return Grade.where(assignment_pk=self.pk)
+
 
 class Grade(Model):
     _table_name = 'grade'

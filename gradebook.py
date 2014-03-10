@@ -1,14 +1,12 @@
-import sqlite3
-from flask import Flask, g, url_for, redirect, render_template, request
+from flask import Flask, url_for, redirect, render_template, request
 from model import Student, Assignment, Grade, db
-from operator import attrgetter
 from datetime import datetime
 
 DEBUG = True
-SECRET_KEY = "'K\xaf\xd2\xc7\xc2#J\x05s%\x99J\x8e\xda\x85\xbe<t\xb2\xea\xab\xa7\xa4\xef'"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.secret_key = "'K\xaf\xd2\xc7\xc2#J\x05s%\x99J\x8e\xda\x85\xbe<t\xb2\xea\xab\xa7\xa4\xef'"
 
 
 def invisible_none(value):
@@ -30,16 +28,17 @@ def before_request():
     # more elegant solution. TODO?
     db.connect()
 
+
 @app.after_request
 def after_request(response):
     db.close()
     return response
 
 
-
 @app.route('/')
 def index():
     return redirect(url_for("gradebook"), code=302)
+
 
 @app.route('/gradebook/')
 def gradebook():
@@ -51,8 +50,12 @@ def gradebook():
         grades = student.get_grades()
         by_assignment_pk = dict([(g.assignment_pk, g) for g in grades])
         student.grades = [by_assignment_pk.get(pk) for pk in assignment_pks]
-    return render_template("gradebook.html", assignments=assignments,
-            students=students)
+    return render_template(
+        "gradebook.html",
+        assignments=assignments,
+        students=students
+    )
+
 
 @app.route('/public_gradebook/')
 def public_gradebook():
@@ -75,9 +78,12 @@ def public_gradebook():
         student.has_comments = any((grade.comment for grade in grades))
 
     now = datetime.now()
-    return render_template("public_gradebook.html", assignments=assignments,
-            students=students, now=now)
-
+    return render_template(
+        "public_gradebook.html",
+        assignments=assignments,
+        students=students,
+        now=now
+    )
 
 
 @app.route('/students/')
@@ -85,10 +91,12 @@ def students():
     students = Student.all()
     return render_template('student_list.html', students=students)
 
+
 @app.route('/students/view/<int:student_pk>/')
 def student_view(student_pk):
     student = Student.get(pk=student_pk)
     return render_template("student_view.html", student=student)
+
 
 @app.route('/students/create/', methods=['GET', 'POST'])
 def student_create():
@@ -96,17 +104,18 @@ def student_create():
         return render_template('student_create.html')
     elif request.method == "POST":
         student = Student(
-                first_name = request.form['first_name'],
-                last_name = request.form['last_name'],
-                alias = request.form['alias'],
-                grad_year = request.form['grad_year'],
-                email = request.form['email'],
-                )
+            first_name=request.form['first_name'],
+            last_name=request.form['last_name'],
+            alias=request.form['alias'],
+            grad_year=request.form['grad_year'],
+            email=request.form['email'],
+        )
         student.save()
         if "create_and_add" in request.form:
             return render_template('student_create.html')
         elif "create" in request.form:
             return redirect(url_for('student_view', student_pk=student.pk))
+
 
 @app.route('/students/update/<int:student_pk>/', methods=['GET', 'POST'])
 def student_update(student_pk):
@@ -122,6 +131,7 @@ def student_update(student_pk):
         student.save()
         return redirect(url_for('student_view', student_pk=student_pk))
 
+
 @app.route('/students/delete/<int:student_pk>/', methods=['GET', 'POST'])
 def student_delete(student_pk):
     student = Student.get(pk=student_pk)
@@ -132,23 +142,24 @@ def student_delete(student_pk):
         return redirect(url_for('students'))
 
 
-
 @app.route('/assignments/')
 def assignments():
     assignments = Assignment.all()
     return render_template('assignment_list.html', assignments=assignments)
+
 
 @app.route('/assignments/view/<int:assignment_pk>/')
 def assignment_view(assignment_pk):
     assignment = Assignment.get(pk=assignment_pk)
     students = Student.all()
     grades = assignment.get_grades()
-    student_pks = [s.pk for s in students]
     g_by_student_pk = dict([(g.student_pk, g) for g in grades])
     for s in students:
         s.grade = g_by_student_pk.get(s.pk)
-    return render_template('assignment_view.html', assignment=assignment,
-            students=students)
+    return render_template(
+        'assignment_view.html', assignment=assignment, students=students
+    )
+
 
 @app.route('/assignments/create/', methods=['GET', 'POST'])
 def assignment_create():
@@ -156,26 +167,27 @@ def assignment_create():
         return render_template('assignment_create.html')
     elif request.method == 'POST':
         assignment = Assignment(
-                name = request.form['name'],
-                description = request.form['description'],
-                #comment = request.form['comment'], #This causes an HTTP 400 when a value wasn't submitted in the form (because of a KeyError on the MultiDict). How stupid!
-                due_date = request.form['due_date'],
-                points = request.form['points'],
-                is_public = request.form.get('is_public', False, bool)
-                )
+            name=request.form['name'],
+            description=request.form['description'],
+            #comment=request.form['comment'],#ThiscausesanHTTP400whenavaluewasn'tsubmittedintheform(becauseofaKeyErrorontheMultiDict).Howstupid!
+            due_date=request.form['due_date'],
+            points=request.form['points'],
+            is_public=request.form.get('is_public', False, bool)
+        )
         assignment.save()
         if "create_and_add" in request.form:
             return render_template('assignment_create.html')
         elif "create" in request.form:
-            return redirect(url_for('assignment_view',
-                assignment_pk=assignment.pk))
+            return redirect(
+                url_for('assignment_view', assignment_pk=assignment.pk)
+            )
+
 
 @app.route('/assignments/update/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_update(assignment_pk):
     assignment = Assignment.get(pk=assignment_pk)
     if request.method == 'GET':
-        return render_template('assignment_update.html',
-                assignment=assignment)
+        return render_template('assignment_update.html', assignment=assignment)
     elif request.method == 'POST':
         assignment.name = request.form['name']
         assignment.description = request.form['description']
@@ -184,18 +196,18 @@ def assignment_update(assignment_pk):
         assignment.points = request.form['points']
         assignment.is_public = request.form.get('is_public', False, bool)
         assignment.save()
-        return redirect(url_for('assignment_view',
-            assignment_pk=assignment.pk))
+        return redirect(url_for('assignment_view', assignment_pk=assignment.pk))
+
 
 @app.route('/assignments/delete/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_delete(assignment_pk):
     assignment = Assignment.get(pk=assignment_pk)
     if request.method == 'GET':
-        return render_template('assignment_delete.html',
-                assignment=assignment)
+        return render_template('assignment_delete.html', assignment=assignment)
     if request.method == 'POST':
         assignment.delete()
         return redirect(url_for('assignments'))
+
 
 @app.route('/assignment/update_grades/<int:assignment_pk>/', methods=['GET', 'POST'])
 def assignment_grades_update(assignment_pk):
@@ -205,14 +217,17 @@ def assignment_grades_update(assignment_pk):
     # We decorate the student's with their grades.
     # Ideally, this would be done with a select_related type thing in the
     # model. At the SQL level. TODO
-    student_pks = [s.pk for s in students]
     g_by_student_pk = dict([(grade.student_pk, grade) for grade in grades])
     for s in students:
         s.grade = g_by_student_pk.get(s.pk)
 
     if request.method == 'GET':
-        return render_template("assignment_grades_update.html",
-                assignment=assignment, students=students)
+        return render_template(
+            "assignment_grades_update.html",
+            assignment=assignment,
+            students=students
+        )
+
     # TODO: This POSt method seems cumbersome. Can it be fixed?
     if request.method == 'POST':
         for student in students:
@@ -233,19 +248,19 @@ def assignment_grades_update(assignment_pk):
             except ValueError:
                 points = None
             comment = comment.strip()
-            
+
             if student.grade is None:
-                student.grade = Grade(student_pk=student.pk,
-                        assignment_pk=assignment.pk, 
-                        points=points,
-                        comment=comment)
+                student.grade = Grade(
+                    student_pk=student.pk,
+                    assignment_pk=assignment.pk,
+                    points=points,
+                    comment=comment
+                )
             else:
                 student.grade.points = points
                 student.grade.comment = comment
             student.grade.save()
-        return redirect(url_for('assignment_view',
-            assignment_pk=assignment_pk))
-
+        return redirect(url_for('assignment_view', assignment_pk=assignment_pk))
 
 
 if __name__ == '__main__':
