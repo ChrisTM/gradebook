@@ -58,18 +58,22 @@ def gradebook():
 def public_gradebook():
     students = Student.all(order='alias')
     assignments = [a for a in Assignment.all() if a.is_public]
-    assignments_by_pk = dict([(a.pk, a) for a in assignments])
     for student in students:
         # Set the grades following the order specified by assignment_pks
         grades = student.get_grades()
-        if not grades:
-            continue
+
         grades_by_assignment_pk = dict([(g.assignment_pk, g) for g in grades])
-        grades = [grades_by_assignment_pk.get(a.pk) for a in assignments]
-        for grade in grades:
-            grade.assignment = assignments_by_pk[grade.assignment_pk]
-        student.has_comments = any((grade.comment for grade in grades))
+
+        student.points_by_assignment_pk = {}
+        for assignment in assignments:
+            grade = grades_by_assignment_pk.get(assignment.pk)
+            if grade:
+                grade.assignment = assignment
+            points = grade.points if grade else 0
+            student.points_by_assignment_pk[assignment.pk] = points
         student.grades = grades
+        student.has_comments = any((grade.comment for grade in grades))
+
     now = datetime.now()
     return render_template("public_gradebook.html", assignments=assignments,
             students=students, now=now)

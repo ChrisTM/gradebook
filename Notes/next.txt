@@ -1,5 +1,4 @@
   - Does not exist error pages when trying to access a nonexistent student or assignment. (Use 404s!)
-  - Error page on public gradebook when assignment is newly created.
   - Add workflow to edit grades from a student's page.
   - Ensure i'm using request.form.get() where appropriate (might be missing some opportunities!)
   - A checkbox to mark grade or assignment comments as being plain text (so we escape it) or as html (for straight pass-through)?
@@ -11,7 +10,6 @@
   - Form pre-filling on fail of creation
   - Form validation on creation
   - CSSed forms http://www.cssdrive.com/index.php/examples/exampleitem/tableless_forms/
-  - Investigate need to secure POST forms. Don't want people CSRFing a delete or something. Use a nonce?
 
   - Here is a query to get average grades:
         SELECT student.pk, student.first_name, ROUND(AVG(grade.points),1) as avg_grade FROM student JOIN grade ON student.pk = grade.student_pk GROUP BY student.pk;

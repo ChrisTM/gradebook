@@ -32,8 +32,8 @@
         <tr>
             {#- We use the loop index instead of the student's pk for privacy reasons. #}
             <td><a title="Jump to this person’s comments…"{%- if student.has_comments %} href="#Student{{ loop.index }}"{%- endif %}>{{ student.alias }}</a></td>
-            {%- for grade in student.grades %}
-            <td>{{ grade.points }}</td>
+            {%- for assignment in assignments %}
+            <td>{{ student.points_by_assignment_pk.get(assignment.pk) }}</td>
             {%- endfor %}
         </tr>
         {%- endif %}
